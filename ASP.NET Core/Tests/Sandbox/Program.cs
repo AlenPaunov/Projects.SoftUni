@@ -4,23 +4,21 @@
     using System.Diagnostics;
     using System.IO;
 
-    using AspNetCoreTemplate.Data;
-    using AspNetCoreTemplate.Data.Common;
-    using AspNetCoreTemplate.Data.Common.Repositories;
-    using AspNetCoreTemplate.Data.Models;
-    using AspNetCoreTemplate.Data.Repositories;
-    using AspNetCoreTemplate.Data.Seeding;
-    using AspNetCoreTemplate.Services.Data;
-    using AspNetCoreTemplate.Services.Messaging;
-
     using CommandLine;
-
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Identity.UI.Services;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using ProjectsSoftuni.Data;
+    using ProjectsSoftuni.Data.Common;
+    using ProjectsSoftuni.Data.Common.Repositories;
+    using ProjectsSoftuni.Data.Models;
+    using ProjectsSoftuni.Data.Repositories;
+    using ProjectsSoftuni.Data.Seeding;
+    using ProjectsSoftuni.Services.Data;
+    using ProjectsSoftuni.Services.Messaging;
 
     public static class Program
     {
@@ -34,9 +32,9 @@
             // Seed data on application startup
             using (var serviceScope = serviceProvider.CreateScope())
             {
-                var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var dbContext = serviceScope.ServiceProvider.GetRequiredService<ProjectsSoftuniDbContext>();
                 dbContext.Database.Migrate();
-                new ApplicationDbContextSeeder().SeedAsync(dbContext, serviceScope.ServiceProvider).GetAwaiter().GetResult();
+                new ProjectsSoftuniDbContextSeeder().SeedAsync(dbContext, serviceScope.ServiceProvider).GetAwaiter().GetResult();
             }
 
             using (var serviceScope = serviceProvider.CreateScope())
@@ -66,12 +64,12 @@
                 .Build();
 
             services.AddSingleton<IConfiguration>(configuration);
-            services.AddDbContext<ApplicationDbContext>(
+            services.AddDbContext<ProjectsSoftuniDbContext>(
                 options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
                     .UseLoggerFactory(new LoggerFactory()));
 
             services
-                .AddIdentity<ApplicationUser, ApplicationRole>(options =>
+                .AddIdentity<ProjectsSoftuniUser, ProjectsSoftuniRole>(options =>
                 {
                     options.Password.RequireDigit = false;
                     options.Password.RequireLowercase = false;
@@ -79,9 +77,9 @@
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequiredLength = 6;
                 })
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddUserStore<ApplicationUserStore>()
-                .AddRoleStore<ApplicationRoleStore>()
+                .AddEntityFrameworkStores<ProjectsSoftuniDbContext>()
+                .AddUserStore<ProjectsSoftuniUserStore>()
+                .AddRoleStore<ProjectsSoftuniRoleStore>()
                 .AddDefaultTokenProviders();
 
             services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
