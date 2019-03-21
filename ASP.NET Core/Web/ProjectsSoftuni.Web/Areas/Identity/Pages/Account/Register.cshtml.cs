@@ -1,5 +1,6 @@
 ﻿namespace ProjectsSoftuni.Web.Areas.Identity.Pages.Account
 {
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Text.Encodings.Web;
     using System.Threading.Tasks;
@@ -10,7 +11,9 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.Extensions.Logging;
+    using ProjectsSoftuni.Common;
     using ProjectsSoftuni.Data.Models;
+    using ProjectsSoftuni.Services.Data;
 
     [AllowAnonymous]
 #pragma warning disable SA1649 // File name should match first type name
@@ -21,17 +24,20 @@
         private readonly UserManager<ProjectsSoftuniUser> userManager;
         private readonly ILogger<RegisterModel> logger;
         private readonly IEmailSender emailSender;
+        private readonly IRoleService roleService;
 
         public RegisterModel(
             UserManager<ProjectsSoftuniUser> userManager,
             SignInManager<ProjectsSoftuniUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IRoleService roleService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.logger = logger;
             this.emailSender = emailSender;
+            this.roleService = roleService;
         }
 
         [BindProperty]
@@ -46,10 +52,15 @@
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl = returnUrl ?? this.Url.Content("~/");
+            returnUrl = returnUrl ?? this.Url.Content("~/Identity/Account/Login");
             if (this.ModelState.IsValid)
             {
                 var user = new ProjectsSoftuniUser { UserName = this.Input.Email, Email = this.Input.Email };
+
+                var role = this.roleService.GetRoleByName(GlobalConstants.UserRoleName);
+                var defaultRoleUser = new IdentityUserRole<string>() { RoleId = role.Id };
+                user.Roles.Add(defaultRoleUser);
+
                 var result = await this.userManager.CreateAsync(user, this.Input.Password);
                 if (result.Succeeded)
                 {
@@ -67,7 +78,6 @@
                         "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    await this.signInManager.SignInAsync(user, isPersistent: false);
                     return this.LocalRedirect(returnUrl);
                 }
 

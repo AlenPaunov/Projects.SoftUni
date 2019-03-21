@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Data\ProjectsSoftuni.Data.Common\ProjectsSoftuni.Data.Common.csproj" />
     <ProjectReference Include="..\..\Data\ProjectsSoftuni.Data.Models\ProjectsSoftuni.Data.Models.csproj" />
+    <ProjectReference Include="..\..\ProjectsSoftuni.Common\ProjectsSoftuni.Common.csproj" />
   </ItemGroup>
 
 </Project>

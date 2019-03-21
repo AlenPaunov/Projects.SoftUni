@@ -3,6 +3,7 @@
     using System;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
 
     using CommandLine;
     using Microsoft.AspNetCore.Identity;
@@ -51,6 +52,12 @@
         {
             var sw = Stopwatch.StartNew();
             var settingsService = serviceProvider.GetService<ISettingsService>();
+            var dbContext = serviceProvider.GetService<ProjectsSoftuniDbContext>();
+
+            var users = dbContext.Users.ToList();
+            var roles = dbContext.Roles.ToList();
+            var rolesUsers = dbContext.UserRoles.ToList();
+
             Console.WriteLine($"Count of settings: {settingsService.GetCount()}");
             Console.WriteLine(sw.Elapsed);
             return 0;
