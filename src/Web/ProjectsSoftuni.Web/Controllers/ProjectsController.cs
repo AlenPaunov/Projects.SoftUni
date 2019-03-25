@@ -3,6 +3,9 @@
 
     using Microsoft.AspNetCore.Mvc;
     using ProjectsSoftuni.Services;
+    using ProjectsSoftuni.Services.Models.Projects;
+    using System.Security.Claims;
+    using System.Threading.Tasks;
 
     public class ProjectsController : BaseController
     {
@@ -23,6 +26,14 @@
             }
 
             return this.View(project);
+        }
+
+        public async Task<IActionResult> ApplyForProject(string projectId)
+        {
+            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            await this.projectService.ApplyForProjectAsync(projectId, userId);
+
+            return this.RedirectToAction(nameof(this.Details), new { id = projectId });
         }
     }
 }

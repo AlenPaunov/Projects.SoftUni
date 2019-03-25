@@ -20,5 +20,7 @@
         ProjectsIndexViewModel GetAllProjects();
 
         ProjectDetailsViewModel GetProjectDetailsById(string id);
+
+        Task ApplyForProjectAsync(string projectId, string userId);
     }
 }

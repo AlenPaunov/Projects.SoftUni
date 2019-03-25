@@ -15,11 +15,22 @@
     {
         private readonly IRepository<Project> projectsRepository;
         private readonly IRepository<ProjectStatus> projectStatusRepository;
+        private readonly IRepository<ProjectsSoftuniUser> userRepository;
+        private readonly IRepository<Application> applicationsRepository;
+        private readonly IRepository<ApplicationStatus> applicationStatusesRepository;
 
-        public ProjectService(IRepository<Project> projectsRepository, IRepository<ProjectStatus> projectStatusRepository)
+        public ProjectService(
+            IRepository<Project> projectsRepository,
+            IRepository<ProjectStatus> projectStatusRepository,
+            IRepository<ProjectsSoftuniUser> userRepository,
+            IRepository<Application> applicationsRepository,
+            IRepository<ApplicationStatus> applicationStatusesRepository)
         {
             this.projectsRepository = projectsRepository;
             this.projectStatusRepository = projectStatusRepository;
+            this.userRepository = userRepository;
+            this.applicationsRepository = applicationsRepository;
+            this.applicationStatusesRepository = applicationStatusesRepository;
         }
 
         public ProjectsIndexViewModel GetProjectsWithWaitingApplicationStatus()
@@ -105,6 +116,7 @@
             {
                 projectViewModel = new ProjectDetailsViewModel()
                 {
+                    Id = project.Id,
                     Budget = project.Budget,
                     DeployLink = project.DeployLink,
                     Description = project.Description,
@@ -117,6 +129,32 @@
             }
 
             return projectViewModel;
+        }
+
+        public async Task ApplyForProjectAsync(string projectId, string userId)
+        {
+            if (!(string.IsNullOrWhiteSpace(projectId) && string.IsNullOrWhiteSpace(userId)))
+            {
+                var project = this.projectsRepository.All().Include(p => p.Status).SingleOrDefault(p => p.Id == projectId);
+                var user = this.userRepository.All().SingleOrDefault(p => p.Id == userId);
+
+                if (project.Status.Name == GlobalConstants.OpenProjectStatus)
+                {
+                    var applicationStatus = this.applicationStatusesRepository
+                        .All()
+                        .FirstOrDefault(s => s.Name == GlobalConstants.WaitingApplicationStatus);
+
+                    var application = new Application()
+                    {
+                        Project = project,
+                        User = user,
+                        ApplicationStatus = applicationStatus,
+                    };
+
+                    await this.applicationsRepository.AddAsync(application);
+                    await this.applicationsRepository.SaveChangesAsync();
+                }
+            }
         }
     }
 }
