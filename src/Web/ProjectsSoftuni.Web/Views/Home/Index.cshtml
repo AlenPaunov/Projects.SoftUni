@@ -1,8 +1,32 @@
-﻿@{
-    this.ViewData["Title"] = "Home Page";
+﻿@model ProjectsSoftuni.Services.Models.Projects.ProjectsIndexViewModel
+
+@{
+    ViewData["Title"] = "Index";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to ProjectsSoftuni!</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1>All Projects</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Owner</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var project in Model.Projects)
+        {
+            <tr>
+                <td>
+                    @project.Name
+                </td>
+                <td>
+                    @project.Owner
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "Details", new { id = project.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

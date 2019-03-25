@@ -22,6 +22,6 @@
 
         public string DeployLink { get; set; }
 
-        public decimal Budget { get; set; }
+        public decimal? Budget { get; set; }
     }
 }

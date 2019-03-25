@@ -8,6 +8,7 @@
     using Microsoft.AspNetCore.Mvc;
     using ProjectsSoftuni.Services;
     using ProjectsSoftuni.Services.Models;
+    using ProjectsSoftuni.Web.Areas.Administration.ViewModels.Projects;
     using ProjectsSoftuni.Web.Controllers;
 
     public class ProjectsController : AdministrationController
@@ -33,12 +34,22 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ProjectIndexViewModel input)
+        public async Task<IActionResult> Create(CreateProjectInputModel input)
         {
             if (!this.ModelState.IsValid)
             {
                 return this.View(input);
             }
+
+            var projectId = await this.projectService
+                .CreateAsync(
+                    input.Name,
+                    input.Description,
+                    input.Owner,
+                    input.FinishDate,
+                    input.GitHubLink,
+                    input.DeployLink,
+                    input.Budget);
 
             return this.RedirectToAction(nameof(this.Index));
         }

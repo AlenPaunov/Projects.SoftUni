@@ -1,9 +1,22 @@
 ﻿namespace ProjectsSoftuni.Services
 {
-    using ProjectsSoftuni.Services.Models;
+    using System.Threading.Tasks;
+
+    using ProjectsSoftuni.Services.Models.Projects;
 
     public interface IProjectService
     {
         ProjectsIndexViewModel GetProjectsWithWaitingApplicationStatus();
+
+        Task<string> CreateAsync(
+            string name,
+            string description,
+            string owner,
+            string finishDate,
+            string gitHubLink,
+            string deployLink,
+            decimal? budget);
+
+        ProjectsIndexViewModel GetAllProjects();
     }
 }

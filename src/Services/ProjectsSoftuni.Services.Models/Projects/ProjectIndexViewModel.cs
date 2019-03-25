@@ -1,4 +1,4 @@
-﻿namespace ProjectsSoftuni.Services.Models
+﻿namespace ProjectsSoftuni.Services.Models.Projects
 {
     public class ProjectIndexViewModel
     {

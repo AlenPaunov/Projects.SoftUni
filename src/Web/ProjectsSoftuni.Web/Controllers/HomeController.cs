@@ -1,12 +1,21 @@
 ﻿namespace ProjectsSoftuni.Web.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
+    using ProjectsSoftuni.Services;
 
     public class HomeController : BaseController
     {
+        private readonly IProjectService projectService;
+
+        public HomeController(IProjectService projectService)
+        {
+            this.projectService = projectService;
+        }
+
         public IActionResult Index()
         {
-            return this.View();
+            var projects = this.projectService.GetAllProjects();
+            return this.View(projects);
         }
 
         public IActionResult Privacy()

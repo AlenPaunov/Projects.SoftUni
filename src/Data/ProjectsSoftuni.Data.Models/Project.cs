@@ -28,13 +28,14 @@
         [Required]
         public string Owner { get; set; }
 
+        // TODO: DueDate
         public DateTime? FinishDate { get; set; }
 
         public string GitHubLink { get; set; }
 
         public string DeployLink { get; set; }
 
-        public decimal Budget { get; set; }
+        public decimal? Budget { get; set; }
 
         public virtual ICollection<ProjectUser> Team { get; set; }
 
