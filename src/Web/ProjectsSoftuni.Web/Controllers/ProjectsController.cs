@@ -1,11 +1,11 @@
 ﻿namespace ProjectsSoftuni.Web.Controllers
 {
+    using System.Security.Claims;
+    using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
     using ProjectsSoftuni.Services;
     using ProjectsSoftuni.Services.Models.Projects;
-    using System.Security.Claims;
-    using System.Threading.Tasks;
 
     public class ProjectsController : BaseController
     {
