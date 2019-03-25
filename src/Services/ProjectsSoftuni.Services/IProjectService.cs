@@ -12,7 +12,7 @@
             string name,
             string description,
             string owner,
-            string finishDate,
+            string dueDate,
             string gitHubLink,
             string deployLink,
             decimal? budget);

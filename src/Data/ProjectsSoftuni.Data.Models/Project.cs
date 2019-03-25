@@ -28,8 +28,7 @@
         [Required]
         public string Owner { get; set; }
 
-        // TODO: DueDate
-        public DateTime? FinishDate { get; set; }
+        public DateTime? DueDate { get; set; }
 
         public string GitHubLink { get; set; }
 

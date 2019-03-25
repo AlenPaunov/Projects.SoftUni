@@ -41,13 +41,13 @@
             return projectsViewModel;
         }
 
-        public async Task<string> CreateAsync(string name, string description, string owner, string finishDate, string gitHubLink, string deployLink, decimal? budget)
+        public async Task<string> CreateAsync(string name, string description, string owner, string dueDate, string gitHubLink, string deployLink, decimal? budget)
         {
             DateTime? dt = null;
 
-            if (!string.IsNullOrEmpty(finishDate))
+            if (!string.IsNullOrEmpty(dueDate))
             {
-                dt = DateTime.ParseExact(finishDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                dt = DateTime.ParseExact(dueDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             }
 
             var openProjectStatus = this.projectStatusRepository.All().SingleOrDefault(s => s.Name == GlobalConstants.OpenProjectStatus);
@@ -57,7 +57,7 @@
                 Name = name,
                 Description = description,
                 Owner = owner,
-                FinishDate = dt,
+                DueDate = dt,
                 GitHubLink = gitHubLink,
                 DeployLink = deployLink,
                 Budget = budget,

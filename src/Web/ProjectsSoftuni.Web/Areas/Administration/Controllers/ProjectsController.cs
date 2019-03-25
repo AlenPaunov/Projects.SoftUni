@@ -1,15 +1,10 @@
 ﻿namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
     using ProjectsSoftuni.Services;
-    using ProjectsSoftuni.Services.Models;
     using ProjectsSoftuni.Web.Areas.Administration.ViewModels.Projects;
-    using ProjectsSoftuni.Web.Controllers;
 
     public class ProjectsController : AdministrationController
     {
@@ -46,7 +41,7 @@
                     input.Name,
                     input.Description,
                     input.Owner,
-                    input.FinishDate,
+                    input.DueDate,
                     input.GitHubLink,
                     input.DeployLink,
                     input.Budget);

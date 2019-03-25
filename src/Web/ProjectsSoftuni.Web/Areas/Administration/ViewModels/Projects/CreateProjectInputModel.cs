@@ -16,7 +16,7 @@
         [MinLength(5)]
         public string Owner { get; set; }
 
-        public string FinishDate { get; set; }
+        public string DueDate { get; set; }
 
         public string GitHubLink { get; set; }
 
