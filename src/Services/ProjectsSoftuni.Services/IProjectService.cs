@@ -18,5 +18,7 @@
             decimal? budget);
 
         ProjectsIndexViewModel GetAllProjects();
+
+        ProjectDetailsViewModel GetProjectDetailsById(string id);
     }
 }

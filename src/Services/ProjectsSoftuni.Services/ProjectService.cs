@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Microsoft.EntityFrameworkCore;
     using ProjectsSoftuni.Common;
     using ProjectsSoftuni.Data.Common.Repositories;
     using ProjectsSoftuni.Data.Models;
@@ -87,6 +88,35 @@
             var projectsViewModel = new ProjectsIndexViewModel() { Projects = projects };
 
             return projectsViewModel;
+        }
+
+        public ProjectDetailsViewModel GetProjectDetailsById(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return null;
+            }
+
+            var project = this.projectsRepository.All().Include(p => p.Status).FirstOrDefault(p => p.Id == id);
+
+            ProjectDetailsViewModel projectViewModel = null;
+
+            if (project != null)
+            {
+                projectViewModel = new ProjectDetailsViewModel()
+                {
+                    Budget = project.Budget,
+                    DeployLink = project.DeployLink,
+                    Description = project.Description,
+                    DueDate = project.DueDate.ToString(),
+                    GitHubLink = project.GitHubLink,
+                    Name = project.Name,
+                    Owner = project.Owner,
+                    Status = project.Status.Name,
+                };
+            }
+
+            return projectViewModel;
         }
     }
 }
