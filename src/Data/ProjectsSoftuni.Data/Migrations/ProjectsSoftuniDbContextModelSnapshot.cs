@@ -335,7 +335,7 @@ namespace ProjectsSoftuni.Data.Migrations
                     b.HasOne("ProjectsSoftuni.Data.Models.ProjectsSoftuniRole")
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -363,12 +363,12 @@ namespace ProjectsSoftuni.Data.Migrations
                     b.HasOne("ProjectsSoftuni.Data.Models.ProjectsSoftuniRole")
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ProjectsSoftuni.Data.Models.ProjectsSoftuniUser")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -376,7 +376,7 @@ namespace ProjectsSoftuni.Data.Migrations
                     b.HasOne("ProjectsSoftuni.Data.Models.ProjectsSoftuniUser")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("ProjectsSoftuni.Data.Models.Application", b =>
@@ -389,12 +389,12 @@ namespace ProjectsSoftuni.Data.Migrations
                     b.HasOne("ProjectsSoftuni.Data.Models.Project", "Project")
                         .WithMany("Applications")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ProjectsSoftuni.Data.Models.ProjectsSoftuniUser", "User")
                         .WithMany("Applications")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("ProjectsSoftuni.Data.Models.Project", b =>
@@ -410,12 +410,12 @@ namespace ProjectsSoftuni.Data.Migrations
                     b.HasOne("ProjectsSoftuni.Data.Models.Project", "Project")
                         .WithMany("Team")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ProjectsSoftuni.Data.Models.ProjectsSoftuniUser", "User")
                         .WithMany("AprovedProjects")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

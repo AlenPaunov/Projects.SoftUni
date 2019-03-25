@@ -76,12 +76,12 @@
             }
 
             // Disable cascade delete
-            var foreignKeys = entityTypes
-                .SelectMany(e => e.GetForeignKeys().Where(f => f.DeleteBehavior == DeleteBehavior.Cascade));
-            foreach (var foreignKey in foreignKeys)
-            {
-                foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
-            }
+            //var foreignKeys = entityTypes
+            //    .SelectMany(e => e.GetForeignKeys().Where(f => f.DeleteBehavior == DeleteBehavior.Cascade));
+            //foreach (var foreignKey in foreignKeys)
+            //{
+            //    foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+            //}
         }
 
         private static void ConfigureUserIdentityRelations(ModelBuilder builder)
@@ -105,7 +105,7 @@
                 .WithOne()
                 .HasForeignKey(e => e.UserId)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         private static void ConfigureApplicationRelations(ModelBuilder builder)
