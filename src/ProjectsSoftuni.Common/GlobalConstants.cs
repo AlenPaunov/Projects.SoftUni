@@ -17,5 +17,13 @@
         public const string WaitingApplicationStatus = "Waiting";
 
         public const string RejectedApplicationStatus = "Rejected";
+
+        public const string DefaultAdminEmail = "admin@admin.bg";
+
+        public const string DefaultAdminPassword = "admin123123";
+
+        public const string DefaultUserEmail = "user@user.bg";
+
+        public const string DefaultUserPassword = "user123123";
     }
 }

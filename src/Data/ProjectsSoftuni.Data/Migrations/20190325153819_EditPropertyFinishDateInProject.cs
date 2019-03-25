@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace ProjectsSoftuni.Data.Migrations
+﻿namespace ProjectsSoftuni.Data.Migrations
 {
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class EditPropertyFinishDateInProject : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

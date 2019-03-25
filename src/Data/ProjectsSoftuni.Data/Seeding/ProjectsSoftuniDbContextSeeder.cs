@@ -29,6 +29,7 @@
                               new SettingsSeeder(),
                               new ApplicationStatusesSeeder(),
                               new ProjectStatusesSeeder(),
+                              new UsersSeeder(),
                           };
 
             foreach (var seeder in seeders)
