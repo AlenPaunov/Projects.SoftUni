@@ -2,6 +2,7 @@
 namespace ProjectsSoftuni.Data.Models
 {
     using System;
+    using System.Collections.Generic;
 
     using Microsoft.AspNetCore.Identity;
     using ProjectsSoftuni.Data.Common.Models;
@@ -11,6 +12,7 @@ namespace ProjectsSoftuni.Data.Models
         public ProjectsSoftuniRole()
             : this(null)
         {
+            this.Users = new HashSet<IdentityUserRole<string>>();
         }
 
         public ProjectsSoftuniRole(string name)
@@ -26,5 +28,7 @@ namespace ProjectsSoftuni.Data.Models
         public bool IsDeleted { get; set; }
 
         public DateTime? DeletedOn { get; set; }
+
+        public virtual ICollection<IdentityUserRole<string>> Users { get; set; }
     }
 }

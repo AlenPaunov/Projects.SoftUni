@@ -83,7 +83,11 @@ namespace ProjectsSoftuni.Data.Migrations
 
                     b.Property<string>("RoleId");
 
+                    b.Property<string>("ProjectsSoftuniRoleId");
+
                     b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("ProjectsSoftuniRoleId");
 
                     b.HasIndex("RoleId");
 
@@ -103,6 +107,107 @@ namespace ProjectsSoftuni.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("ProjectsSoftuni.Data.Models.Application", b =>
+                {
+                    b.Property<string>("ProjectId");
+
+                    b.Property<string>("UserId");
+
+                    b.Property<int>("ApplicationStatusId");
+
+                    b.HasKey("ProjectId", "UserId");
+
+                    b.HasIndex("ApplicationStatusId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Applications");
+                });
+
+            modelBuilder.Entity("ProjectsSoftuni.Data.Models.ApplicationStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<DateTime?>("ModifiedOn");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ApplicationStatuses");
+                });
+
+            modelBuilder.Entity("ProjectsSoftuni.Data.Models.Project", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<decimal>("Budget");
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<string>("DeployLink");
+
+                    b.Property<string>("Description")
+                        .IsRequired();
+
+                    b.Property<DateTime?>("FinishDate");
+
+                    b.Property<string>("GitHubLink");
+
+                    b.Property<DateTime?>("ModifiedOn");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<string>("Owner")
+                        .IsRequired();
+
+                    b.Property<int>("StatusId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StatusId");
+
+                    b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("ProjectsSoftuni.Data.Models.ProjectStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<DateTime?>("ModifiedOn");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProjectStatuses");
+                });
+
+            modelBuilder.Entity("ProjectsSoftuni.Data.Models.ProjectUser", b =>
+                {
+                    b.Property<string>("ProjectId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("ProjectId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ProjectsUsers");
                 });
 
             modelBuilder.Entity("ProjectsSoftuni.Data.Models.ProjectsSoftuniRole", b =>
@@ -252,6 +357,10 @@ namespace ProjectsSoftuni.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.HasOne("ProjectsSoftuni.Data.Models.ProjectsSoftuniRole")
+                        .WithMany("Users")
+                        .HasForeignKey("ProjectsSoftuniRoleId");
+
+                    b.HasOne("ProjectsSoftuni.Data.Models.ProjectsSoftuniRole")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -266,6 +375,45 @@ namespace ProjectsSoftuni.Data.Migrations
                 {
                     b.HasOne("ProjectsSoftuni.Data.Models.ProjectsSoftuniUser")
                         .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("ProjectsSoftuni.Data.Models.Application", b =>
+                {
+                    b.HasOne("ProjectsSoftuni.Data.Models.ApplicationStatus", "ApplicationStatus")
+                        .WithMany()
+                        .HasForeignKey("ApplicationStatusId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ProjectsSoftuni.Data.Models.Project", "Project")
+                        .WithMany("Applications")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ProjectsSoftuni.Data.Models.ProjectsSoftuniUser", "User")
+                        .WithMany("Applications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("ProjectsSoftuni.Data.Models.Project", b =>
+                {
+                    b.HasOne("ProjectsSoftuni.Data.Models.ProjectStatus", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("ProjectsSoftuni.Data.Models.ProjectUser", b =>
+                {
+                    b.HasOne("ProjectsSoftuni.Data.Models.Project", "Project")
+                        .WithMany("Team")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ProjectsSoftuni.Data.Models.ProjectsSoftuniUser", "User")
+                        .WithMany("AprovedProjects")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });

@@ -19,6 +19,7 @@
     using ProjectsSoftuni.Data.Models;
     using ProjectsSoftuni.Data.Repositories;
     using ProjectsSoftuni.Data.Seeding;
+    using ProjectsSoftuni.Services;
     using ProjectsSoftuni.Services.Data;
     using ProjectsSoftuni.Services.Mapping;
     using ProjectsSoftuni.Services.Messaging;

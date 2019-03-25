@@ -25,6 +25,16 @@
 
         public DbSet<Setting> Settings { get; set; }
 
+        public DbSet<Project> Projects { get; set; }
+
+        public DbSet<ProjectStatus> ProjectStatuses { get; set; }
+
+        public DbSet<ApplicationStatus> ApplicationStatuses { get; set; }
+
+        public DbSet<ProjectUser> ProjectsUsers { get; set; }
+
+        public DbSet<Application> Applications { get; set; }
+
         public override int SaveChanges() => this.SaveChanges(true);
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -50,6 +60,7 @@
             base.OnModelCreating(builder);
 
             ConfigureUserIdentityRelations(builder);
+            ConfigureApplicationRelations(builder);
 
             EntityIndexesConfiguration.Configure(builder);
 
@@ -95,6 +106,25 @@
                 .HasForeignKey(e => e.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
+        }
+
+        private static void ConfigureApplicationRelations(ModelBuilder builder)
+        {
+            builder.Entity<Application>().HasKey(a => new { a.ProjectId, a.UserId });
+
+            builder.Entity<ProjectUser>().HasKey(pu => new { pu.ProjectId, pu.UserId });
+
+            builder.Entity<Application>()
+                .HasOne(a => a.ApplicationStatus)
+                .WithMany()
+                .HasForeignKey(e => e.ApplicationStatusId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Project>()
+              .HasOne(a => a.Status)
+              .WithMany()
+              .HasForeignKey(e => e.StatusId)
+              .OnDelete(DeleteBehavior.Restrict);
         }
 
         private static void SetIsDeletedQueryFilter<T>(ModelBuilder builder)

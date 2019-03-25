@@ -15,6 +15,9 @@ namespace ProjectsSoftuni.Data.Models
             this.Roles = new HashSet<IdentityUserRole<string>>();
             this.Claims = new HashSet<IdentityUserClaim<string>>();
             this.Logins = new HashSet<IdentityUserLogin<string>>();
+
+            this.AprovedProjects = new HashSet<ProjectUser>();
+            this.Applications = new HashSet<Application>();
         }
 
         // Audit info
@@ -34,5 +37,8 @@ namespace ProjectsSoftuni.Data.Models
         public virtual ICollection<IdentityUserLogin<string>> Logins { get; set; }
 
         // Application properties and methods
+        public virtual ICollection<ProjectUser> AprovedProjects { get; set; }
+
+        public virtual ICollection<Application> Applications { get; set; }
     }
 }

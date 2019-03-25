@@ -13,7 +13,7 @@
     using Microsoft.Extensions.Logging;
     using ProjectsSoftuni.Common;
     using ProjectsSoftuni.Data.Models;
-    using ProjectsSoftuni.Services.Data;
+    using ProjectsSoftuni.Services;
 
     [AllowAnonymous]
 #pragma warning disable SA1649 // File name should match first type name
@@ -57,8 +57,8 @@
             {
                 var user = new ProjectsSoftuniUser { UserName = this.Input.Email, Email = this.Input.Email };
 
-                var role = this.roleService.GetRoleByName(GlobalConstants.UserRoleName);
-                var defaultRoleUser = new IdentityUserRole<string>() { RoleId = role.Id };
+                var roleId = this.roleService.GetRoleIdByName(GlobalConstants.UserRoleName);
+                var defaultRoleUser = new IdentityUserRole<string>() { RoleId = roleId };
                 user.Roles.Add(defaultRoleUser);
 
                 var result = await this.userManager.CreateAsync(user, this.Input.Password);
