@@ -1,0 +1,37 @@
+﻿@model ProjectsSoftuni.Services.Models.ProjectsIndexViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Owner</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var project in Model.Projects)
+        {
+            <tr>
+                <td>
+                    @project.Name
+                </td>
+                <td>
+                    @project.Owner
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = project.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = project.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = project.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
