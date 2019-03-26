@@ -1,5 +1,7 @@
 ﻿namespace ProjectsSoftuni.Web.Controllers
 {
+    using System.Security.Claims;
+
     using Microsoft.AspNetCore.Mvc;
     using ProjectsSoftuni.Services;
 
@@ -12,8 +14,18 @@
             this.projectService = projectService;
         }
 
+        public IActionResult Home()
+        {
+            return this.View();
+        }
+
         public IActionResult Index()
         {
+            if (this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value == null)
+            {
+                return this.RedirectToAction(nameof(this.Home));
+            }
+
             var projects = this.projectService.GetAllProjects();
             return this.View(projects);
         }

@@ -21,6 +21,6 @@
 
         ProjectDetailsViewModel GetProjectDetailsById(string id);
 
-        Task ApplyForProjectAsync(string projectId, string userId);
+        Task<bool> ApplyForProjectAsync(string projectId, string userId);
     }
 }

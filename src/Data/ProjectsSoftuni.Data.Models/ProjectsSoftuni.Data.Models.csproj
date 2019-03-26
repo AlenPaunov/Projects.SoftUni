@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ProjectsSoftuni.Common\ProjectsSoftuni.Common.csproj" />
     <ProjectReference Include="..\ProjectsSoftuni.Data.Common\ProjectsSoftuni.Data.Common.csproj" />
   </ItemGroup>
   

@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Details";
+    bool isRejectedProject = (bool)ViewData["IsRejectedProject"];
+    bool applyProjectEnabled = (bool)ViewData["ApplyProjectEnabled"];
 }
 
 <h1>Details</h1>
@@ -61,5 +63,8 @@
 </div>
 <div>
     <a asp-action="Index">Back to List</a> |
-    @Html.ActionLink("Apply for the project", "ApplyForProject",  new { projectId = Model.Id })
+    @if (applyProjectEnabled && !isRejectedProject)
+    {
+        @Html.ActionLink("Apply for the project", "ApplyForProject", new { projectId = Model.Id })
+    }
 </div>

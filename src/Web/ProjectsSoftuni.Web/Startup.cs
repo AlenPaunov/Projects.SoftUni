@@ -100,6 +100,7 @@
             services.AddTransient<ISmsSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();
             services.AddTransient<IProjectService, ProjectService>();
+            services.AddTransient<IUserService, UserService>();
 
             // Application services
             services.AddScoped<IRoleService, RoleService>();
