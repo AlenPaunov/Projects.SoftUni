@@ -56,23 +56,18 @@
             return projectsViewModel;
         }
 
-        public async Task<string> CreateAsync(string name, string description, string owner, string dueDate, string gitHubLink, string deployLink, decimal? budget)
+        public async Task<string> CreateAsync(string name, string description, string owner, DateTime? dueDate, string gitHubLink, string deployLink, decimal? budget)
         {
-            DateTime? dt = null;
-
-            if (!string.IsNullOrEmpty(dueDate))
-            {
-                dt = DateTime.ParseExact(dueDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-            }
-
-            var openProjectStatus = this.projectStatusRepository.All().SingleOrDefault(s => s.Name == GlobalConstants.OpenProjectStatus);
+            var openProjectStatus = this.projectStatusRepository
+                .All()
+                .SingleOrDefault(s => s.Name == GlobalConstants.OpenProjectStatus);
 
             var project = new Project()
             {
                 Name = name,
                 Description = description,
                 Owner = owner,
-                DueDate = dt,
+                DueDate = dueDate,
                 GitHubLink = gitHubLink,
                 DeployLink = deployLink,
                 Budget = budget,
@@ -123,7 +118,7 @@
                     Budget = project.Budget,
                     DeployLink = project.DeployLink,
                     Description = project.Description,
-                    DueDate = project.DueDate.ToString(),
+                    DueDate = project.DueDate.GetValueOrDefault().ToString("yyyy-MM-dd"),
                     GitHubLink = project.GitHubLink,
                     Name = project.Name,
                     Owner = project.Owner,
@@ -169,6 +164,64 @@
             await this.applicationsRepository.SaveChangesAsync();
 
             return true;
+        }
+
+        public ProjectEditViewModel GetProjectEditViewModel(string id)
+        {
+            var project = this.GetProjectById(id);
+
+            if (project == null)
+            {
+                return null;
+            }
+
+            var projectViewModel = new ProjectEditViewModel()
+            {
+                Id = project.Id,
+                Budget = project.Budget,
+                DeployLink = project.DeployLink,
+                Description = project.Description,
+                DueDate = project.DueDate,
+                GitHubLink = project.GitHubLink,
+                Name = project.Name,
+                Owner = project.Owner,
+                StatusId = project.StatusId,
+            };
+
+            return projectViewModel;
+        }
+
+        public async Task<string> Edit(ProjectEditViewModel model)
+        {
+            var projectFromDb = this.GetProjectById(model.Id);
+
+            if (projectFromDb == null)
+            {
+                return null;
+            }
+
+            projectFromDb.Name = model.Name;
+            projectFromDb.Description = model.Description;
+            projectFromDb.Owner = model.Owner;
+            projectFromDb.DueDate = model.DueDate;
+            projectFromDb.GitHubLink = model.GitHubLink;
+            projectFromDb.DeployLink = model.DeployLink;
+            projectFromDb.Budget = model.Budget;
+            projectFromDb.StatusId = model.StatusId;
+
+            this.projectsRepository.Update(projectFromDb);
+            await this.projectsRepository.SaveChangesAsync();
+
+            return projectFromDb.Id;
+        }
+
+        private Project GetProjectById(string id)
+        {
+            Validator.ThrowIfStringIsNullOrEmpty(id, ExceptionMessages.ProjectIdNull);
+
+            var project = this.projectsRepository.All().SingleOrDefault(p => p.Id == id);
+
+            return project;
         }
     }
 }

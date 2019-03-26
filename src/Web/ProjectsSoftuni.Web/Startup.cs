@@ -101,6 +101,7 @@
             services.AddTransient<ISettingsService, SettingsService>();
             services.AddTransient<IProjectService, ProjectService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IProjectStatusSevice, ProjectStatusSevice>();
 
             // Application services
             services.AddScoped<IRoleService, RoleService>();

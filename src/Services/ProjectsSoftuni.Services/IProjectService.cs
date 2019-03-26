@@ -1,5 +1,6 @@
 ﻿namespace ProjectsSoftuni.Services
 {
+    using System;
     using System.Threading.Tasks;
 
     using ProjectsSoftuni.Services.Models.Projects;
@@ -12,7 +13,7 @@
             string name,
             string description,
             string owner,
-            string dueDate,
+            DateTime? dueDate,
             string gitHubLink,
             string deployLink,
             decimal? budget);
@@ -22,5 +23,9 @@
         ProjectDetailsViewModel GetProjectDetailsById(string id);
 
         Task<bool> ApplyForProjectAsync(string projectId, string userId);
+
+        ProjectEditViewModel GetProjectEditViewModel(string id);
+
+        Task<string> Edit(ProjectEditViewModel model);
     }
 }
