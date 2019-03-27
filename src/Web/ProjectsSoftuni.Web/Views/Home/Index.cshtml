@@ -16,17 +16,17 @@
     <tbody>
         @foreach (var project in Model.Projects)
         {
-            <tr>
-                <td>
-                    @project.Name
-                </td>
-                <td>
-                    @project.Owner
-                </td>
-                <td>
-                    @Html.ActionLink("Details", "Details", "Projects", new { id = project.Id })
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @project.Name
+            </td>
+            <td>
+                @project.Owner
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", "Projects", new { id = project.Id })
+            </td>
+        </tr>
         }
     </tbody>
 </table>

@@ -25,15 +25,17 @@
         public IActionResult Details(string id)
         {
             var project = this.projectService.GetProjectDetailsById(id);
+
+            if (project == null)
+            {
+                string homeControllerName = this.RemoveControllerFromStr(nameof(HomeController));
+                return this.RedirectToAction(nameof(HomeController.Index), homeControllerName);
+            }
+
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             var applyProjectEnabled = this.userService.ApplicationEnabled(userId);
             var isRejectedProject = this.userService.IsRejectedForTheProject(userId, id);
-
-            if (project == null)
-            {
-                return this.RedirectToAction(nameof(HomeController.Index), nameof(HomeController));
-            }
 
             this.ViewData[ApplyProjectEnabledStr] = applyProjectEnabled;
             this.ViewData[IsRejectedProjectStr] = isRejectedProject;
@@ -47,6 +49,13 @@
             var applyEnabled = await this.projectService.ApplyForProjectAsync(projectId, userId);
 
             return this.RedirectToAction(nameof(this.Details), new { id = projectId });
+        }
+
+        private string RemoveControllerFromStr(string controllerName)
+        {
+            string result = controllerName.Replace("Controller", null);
+
+            return result;
         }
     }
 }

@@ -67,4 +67,9 @@
     {
         @Html.ActionLink("Apply for the project", "ApplyForProject", new { projectId = Model.Id })
     }
+
+    @if (this.User.IsInRole("Administrator"))
+    {
+        <a asp-area="Administration" asp-controller="Projects" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    }
 </div>
