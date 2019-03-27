@@ -18,7 +18,7 @@
             string deployLink,
             decimal? budget);
 
-        ProjectsIndexViewModel GetAllProjects();
+        Task<ProjectsIndexViewModel> GetAllProjects();
 
         ProjectDetailsViewModel GetProjectDetailsById(string id);
 

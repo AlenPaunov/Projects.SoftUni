@@ -9,8 +9,15 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Owner</th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">Name</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["OwnerSortParm"]">Owner</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["StatusSortParm"]">Status</a>
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -22,6 +29,9 @@
             </td>
             <td>
                 @project.Owner
+            </td>
+            <td>
+                @project.Status
             </td>
             <td>
                 @Html.ActionLink("Details", "Details", "Projects", new { id = project.Id })

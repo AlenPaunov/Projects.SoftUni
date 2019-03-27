@@ -7,5 +7,7 @@
         public string Name { get; set; }
         
         public string Owner { get; set; }
+
+        public string Status { get; set; }
     }
 }

@@ -80,19 +80,20 @@
             return project.Id;
         }
 
-        public ProjectsIndexViewModel GetAllProjects()
+        public async Task<ProjectsIndexViewModel> GetAllProjects()
         {
             // TODO: Test sorting
-            var projects = this.projectsRepository
-                .All()
+            var projects = await this.projectsRepository
+                .AllAsNoTracking()
                 .OrderBy(p => p.CreatedOn)
                 .Select(p => new ProjectIndexViewModel()
                 {
                     Id = p.Id,
                     Name = p.Name,
                     Owner = p.Owner,
+                    Status = p.Status.Name,
                 })
-            .ToList();
+                .ToListAsync();
 
             var projectsViewModel = new ProjectsIndexViewModel() { Projects = projects };
 
