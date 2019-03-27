@@ -1,19 +1,30 @@
-﻿@model ProjectsSoftuni.Services.Models.Projects.ProjectsIndexViewModel
+﻿@model ProjectsSoftuni.Web.Models.PaginatedList<ProjectsSoftuni.Services.Models.Projects.ProjectIndexViewModel>
 
 @{
     ViewData["Title"] = "Index";
+    var projectStatuses = this.ViewData["ProjectStatuses"] as IEnumerable<SelectListItem>;
 }
 
 <h1>All Projects</h1>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name or owner: <input type="text" name="searchString" value="@ViewData["currentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+</form>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">Name</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["OwnerSortParm"]">Owner</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["OwnerSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Owner</a>
             </th>
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["StatusSortParm"]">Status</a>
@@ -21,22 +32,46 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var project in Model.Projects)
+        @foreach (var project in Model)
         {
-        <tr>
-            <td>
-                @project.Name
-            </td>
-            <td>
-                @project.Owner
-            </td>
-            <td>
-                @project.Status
-            </td>
-            <td>
-                @Html.ActionLink("Details", "Details", "Projects", new { id = project.Id })
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    @project.Name
+                </td>
+                <td>
+                    @project.Owner
+                </td>
+                <td>
+                    @project.Status
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "Details", "Projects", new { id = project.Id })
+                </td>
+            </tr>
         }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageIndex="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageIndex="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
+
+<script>
+    let
+</script>

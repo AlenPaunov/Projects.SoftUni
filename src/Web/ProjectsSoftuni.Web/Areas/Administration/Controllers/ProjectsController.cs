@@ -93,5 +93,17 @@
 
             return this.RedirectToAction(nameof(this.Index));
         }
+
+        public IActionResult Details(string id)
+        {
+            var project = this.projectService.GetProjectDetailsById(id);
+
+            if (project == null)
+            {
+                return this.RedirectToAction(nameof(this.Index));
+            }
+
+            return this.View(project);
+        }
     }
 }

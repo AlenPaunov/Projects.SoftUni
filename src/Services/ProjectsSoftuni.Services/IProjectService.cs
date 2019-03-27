@@ -1,6 +1,7 @@
 ﻿namespace ProjectsSoftuni.Services
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using ProjectsSoftuni.Services.Models.Projects;
@@ -18,7 +19,7 @@
             string deployLink,
             decimal? budget);
 
-        Task<ProjectsIndexViewModel> GetAllProjects();
+        ProjectsIndexViewModel GetAllProjects();
 
         ProjectDetailsViewModel GetProjectDetailsById(string id);
 

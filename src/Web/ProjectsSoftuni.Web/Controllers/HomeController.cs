@@ -1,19 +1,26 @@
 ﻿namespace ProjectsSoftuni.Web.Controllers
 {
-    using System;
     using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
+
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Rendering;
     using ProjectsSoftuni.Services;
+    using ProjectsSoftuni.Services.Models.Projects;
+    using ProjectsSoftuni.Web.Models;
 
     public class HomeController : BaseController
     {
-        private readonly IProjectService projectService;
+        private const string ProjectStatusesStr = "ProjectStatuses";
 
-        public HomeController(IProjectService projectService)
+        private readonly IProjectService projectService;
+        private readonly IProjectStatusSevice projectStatusSevice;
+
+        public HomeController(IProjectService projectService, IProjectStatusSevice projectStatusSevice)
         {
             this.projectService = projectService;
+            this.projectStatusSevice = projectStatusSevice;
         }
 
         public IActionResult Home()
@@ -21,7 +28,7 @@
             return this.View();
         }
 
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageIndex)
         {
             if (this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value == null)
             {
@@ -31,32 +38,60 @@
             this.ViewData["NameSortParm"] = sortOrder == "name" ? "name_desc" : "name";
             this.ViewData["OwnerSortParm"] = sortOrder == "owner" ? "owner_desc" : "owner";
             this.ViewData["StatusSortParm"] = sortOrder == "status" ? "status_desc" : "status";
+            this.ViewData["CurrentFilter"] = searchString;
+            this.ViewData["CurrentSort"] = sortOrder;
 
-            var projects = await this.projectService.GetAllProjects();
+            if (searchString != null)
+            {
+                pageIndex = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            this.ViewData["CurrentFilter"] = searchString;
+
+            var projects = this.projectService.GetAllProjects();
+
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                projects.Projects = projects.Projects
+                     .Where(p => p.Name.ToLower().Contains(searchString.ToLower())
+                         || p.Owner.ToLower().Contains(searchString.ToLower()));
+            }
 
             switch (sortOrder)
             {
                 case "name_desc":
-                    projects.Projects = projects.Projects.OrderByDescending(p => p.Name).ToArray();
+                    projects.Projects = projects.Projects.OrderByDescending(p => p.Name);
                     break;
                 case "name":
-                    projects.Projects = projects.Projects.OrderBy(p => p.Name).ToList();
+                    projects.Projects = projects.Projects.OrderBy(p => p.Name);
                     break;
                 case "owner_desc":
-                    projects.Projects = projects.Projects.OrderByDescending(p => p.Owner).ToList();
+                    projects.Projects = projects.Projects.OrderByDescending(p => p.Owner);
                     break;
                 case "owner":
-                    projects.Projects = projects.Projects.OrderBy(p => p.Owner).ToList();
+                    projects.Projects = projects.Projects.OrderBy(p => p.Owner);
                     break;
                 case "status_desc":
-                    projects.Projects = projects.Projects.OrderByDescending(p => p.Status).ToList();
+                    projects.Projects = projects.Projects.OrderByDescending(p => p.Status);
                     break;
                 case "status":
-                    projects.Projects = projects.Projects.OrderBy(p => p.Status).ToList();
+                    projects.Projects = projects.Projects.OrderBy(p => p.Status);
                     break;
             }
 
-            return this.View(projects);
+            var projectStatuses = this.projectStatusSevice.GetAllProjectStatuses();
+            this.ViewData[ProjectStatusesStr] = projectStatuses.Select(s => new SelectListItem
+            {
+                Value = s.Id.ToString(),
+                Text = s.Name,
+            });
+
+            int pageSize = 5;
+            return this.View(await PaginatedList<ProjectIndexViewModel>.CreateAsync(projects.Projects, pageIndex ?? 1, pageSize));
         }
 
         public IActionResult Privacy()

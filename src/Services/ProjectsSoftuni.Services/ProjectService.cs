@@ -9,6 +9,7 @@
     using ProjectsSoftuni.Common;
     using ProjectsSoftuni.Data.Common.Repositories;
     using ProjectsSoftuni.Data.Models;
+    using ProjectsSoftuni.Services.Mapping;
     using ProjectsSoftuni.Services.Models.Projects;
 
     public class ProjectService : IProjectService
@@ -48,8 +49,7 @@
                     Id = p.Id,
                     Name = p.Name,
                     Owner = p.Owner,
-                })
-            .ToList();
+                });
 
             var projectsViewModel = new ProjectsIndexViewModel() { Projects = projects };
 
@@ -80,10 +80,10 @@
             return project.Id;
         }
 
-        public async Task<ProjectsIndexViewModel> GetAllProjects()
+        public ProjectsIndexViewModel GetAllProjects()
         {
             // TODO: Test sorting
-            var projects = await this.projectsRepository
+            var projects = this.projectsRepository
                 .AllAsNoTracking()
                 .OrderBy(p => p.CreatedOn)
                 .Select(p => new ProjectIndexViewModel()
@@ -92,8 +92,13 @@
                     Name = p.Name,
                     Owner = p.Owner,
                     Status = p.Status.Name,
-                })
-                .ToListAsync();
+                });
+
+            // var projects = this.projectsRepository
+            //    .AllAsNoTracking()
+            //    .OrderBy(p => p.CreatedOn)
+            //    .AsQueryable()
+            //    .To<TModel>();
 
             var projectsViewModel = new ProjectsIndexViewModel() { Projects = projects };
 
