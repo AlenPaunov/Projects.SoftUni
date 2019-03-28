@@ -1,4 +1,5 @@
-﻿@model ProjectsSoftuni.Services.Models.Projects.ProjectDetailsViewModel
+﻿@using ProjectsSoftuni.Web.Areas.Administration.ViewModels.Applications
+@model ProjectsSoftuni.Services.Models.Projects.ProjectDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -64,3 +65,8 @@
     <a asp-area="Administration" asp-controller="Projects" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
 
 </div>
+
+<br/>
+<br/>
+
+@await this.Html.PartialAsync("../Applications/_ProjectApplications", this.ViewData["Applications"])

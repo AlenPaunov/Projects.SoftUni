@@ -23,7 +23,7 @@
 
         public int StatusId { get; set; }
 
-        public ProjectStatus Status { get; set; }
+        public virtual ProjectStatus Status { get; set; }
 
         [Required]
         public string Owner { get; set; }

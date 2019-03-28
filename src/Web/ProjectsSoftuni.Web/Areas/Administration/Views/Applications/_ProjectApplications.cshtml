@@ -1,0 +1,26 @@
+﻿@model ProjectsSoftuni.Web.Areas.Administration.ViewModels.Applications.ApplicationsViewModel
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Application Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var application in Model.Applications)
+        {
+            <tr>
+                <td>@application.UserUsername</td>
+                <td>@application.UserEmail</td>
+                <td>@application.ApplicationStatusName</td>
+                <td>
+                    @Html.ActionLink("Approve", "Approve", new { projectId = application.ProjectId, userId = application.UserId }) |
+                    @Html.ActionLink("Reject", "Reject", new { projectId = application.ProjectId, userId = application.UserId })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

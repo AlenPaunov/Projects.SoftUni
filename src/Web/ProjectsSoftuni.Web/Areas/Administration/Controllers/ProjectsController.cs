@@ -7,19 +7,23 @@
     using Microsoft.AspNetCore.Mvc.Rendering;
     using ProjectsSoftuni.Services;
     using ProjectsSoftuni.Services.Models.Projects;
+    using ProjectsSoftuni.Web.Areas.Administration.ViewModels.Applications;
     using ProjectsSoftuni.Web.Areas.Administration.ViewModels.Projects;
 
     public class ProjectsController : AdministrationController
     {
         private const string ProjectStatusesStr = "ProjectStatuses";
+        private const string ApplicationsStr = "Applications";
 
         private readonly IProjectService projectService;
         private readonly IProjectStatusSevice projectStatusService;
+        private readonly IApplicationService applicationService;
 
-        public ProjectsController(IProjectService projectService, IProjectStatusSevice projectStatusService)
+        public ProjectsController(IProjectService projectService, IProjectStatusSevice projectStatusService, IApplicationService applicationService)
         {
             this.projectService = projectService;
             this.projectStatusService = projectStatusService;
+            this.applicationService = applicationService;
         }
 
         public IActionResult Index()
@@ -94,13 +98,20 @@
             return this.RedirectToAction(nameof(this.Index));
         }
 
-        public IActionResult Details(string id)
+        public async Task<IActionResult> Details(string id)
         {
             var project = this.projectService.GetProjectDetailsById(id);
+            var applications = await this.applicationService.GetAllByProjectId<ApplicationViewModel>(id);
 
             if (project == null)
             {
                 return this.RedirectToAction(nameof(this.Index));
+            }
+
+            if (applications != null)
+            {
+                var applicationsViewModel = new ApplicationsViewModel() { Applications = applications };
+                this.ViewData[ApplicationsStr] = applicationsViewModel;
             }
 
             return this.View(project);

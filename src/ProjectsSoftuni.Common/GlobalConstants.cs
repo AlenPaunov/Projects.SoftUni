@@ -12,7 +12,7 @@
 
         public const string FinishedProjectStatus = "Finished";
 
-        public const string AprovedApplicationStatus = "Aproved";
+        public const string AprovedApplicationStatus = "Approved";
 
         public const string WaitingApplicationStatus = "Waiting";
 

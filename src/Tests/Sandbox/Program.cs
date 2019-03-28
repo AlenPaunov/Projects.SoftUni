@@ -19,6 +19,7 @@
     using ProjectsSoftuni.Data.Repositories;
     using ProjectsSoftuni.Data.Seeding;
     using ProjectsSoftuni.Services.Data;
+    using ProjectsSoftuni.Services.Mapping;
     using ProjectsSoftuni.Services.Messaging;
 
     public static class Program
@@ -48,13 +49,31 @@
             }
         }
 
+
+        class UserDto
+        {
+            public string Name { get; set; }
+
+            public string Description { get; set; }
+
+            public int StatusId { get; set; }
+
+            public string StatusName { get; set; }
+        }
+
         private static int SandboxCode(SandboxOptions options, IServiceProvider serviceProvider)
         {
             var sw = Stopwatch.StartNew();
             var settingsService = serviceProvider.GetService<ISettingsService>();
             var dbContext = serviceProvider.GetService<ProjectsSoftuniDbContext>();
 
-            var users = dbContext.Users.ToList();
+            var projects = dbContext
+                .Projects;
+
+            var projectDtos = projects.To<UserDto>().ToList();
+            //.To<UserDto>()
+            //.ToList();
+
             var roles = dbContext.Roles.ToList();
             var rolesUsers = dbContext.UserRoles.ToList();
 
@@ -65,6 +84,8 @@
 
         private static void ConfigureServices(ServiceCollection services)
         {
+            AutoMapperConfig.RegisterMappings(typeof(UserDto).Assembly);
+
             var configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", false, true)
                 .AddEnvironmentVariables()

@@ -94,11 +94,11 @@
                     Status = p.Status.Name,
                 });
 
-            // var projects = this.projectsRepository
-            //    .AllAsNoTracking()
-            //    .OrderBy(p => p.CreatedOn)
-            //    .AsQueryable()
-            //    .To<TModel>();
+            //var projects = this.projectsRepository
+            //   .AllAsNoTracking()
+            //   .OrderBy(p => p.CreatedOn)
+            //   .AsQueryable()
+            //   .To<TModel>();
 
             var projectsViewModel = new ProjectsIndexViewModel() { Projects = projects };
 
@@ -223,7 +223,10 @@
 
         private Project GetProjectById(string id)
         {
-            Validator.ThrowIfStringIsNullOrEmpty(id, ExceptionMessages.ProjectIdNull);
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return null;
+            }
 
             var project = this.projectsRepository.All().SingleOrDefault(p => p.Id == id);
 

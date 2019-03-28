@@ -40,7 +40,8 @@
             // Framework services
             // TODO: Add pooling when this bug is fixed: https://github.com/aspnet/EntityFrameworkCore/issues/9741
             services.AddDbContext<ProjectsSoftuniDbContext>(
-                options => options.UseSqlServer(this.configuration.GetConnectionString("DefaultConnection")));
+                options => options
+                .UseSqlServer(this.configuration.GetConnectionString("DefaultConnection")));
 
             services
                 .AddIdentity<ProjectsSoftuniUser, ProjectsSoftuniRole>(options =>
@@ -102,6 +103,7 @@
             services.AddTransient<IProjectService, ProjectService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IProjectStatusSevice, ProjectStatusSevice>();
+            services.AddTransient<IApplicationService, ApplicationService>();
 
             // Application services
             services.AddScoped<IRoleService, RoleService>();
