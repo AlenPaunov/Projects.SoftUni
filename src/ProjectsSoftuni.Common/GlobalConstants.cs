@@ -8,11 +8,11 @@
 
         public const string OpenProjectStatus = "Open";
 
-        public const string InProgresProjectStatus = "In Progress";
+        public const string InProgressProjectStatus = "In Progress";
 
         public const string FinishedProjectStatus = "Finished";
 
-        public const string AprovedApplicationStatus = "Approved";
+        public const string ApprovedApplicationStatus = "Approved";
 
         public const string WaitingApplicationStatus = "Waiting";
 
@@ -25,5 +25,9 @@
         public const string DefaultUserEmail = "user@user.bg";
 
         public const string DefaultUserPassword = "user123123";
+
+        public const string TeamUserStatusTeamLead = "TeamLead";
+
+        public const string TeamUserStatusMember = "Member";
     }
 }

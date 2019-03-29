@@ -30,6 +30,7 @@
                               new ApplicationStatusesSeeder(),
                               new ProjectStatusesSeeder(),
                               new UsersSeeder(),
+                              new TeamUserStatuses(),
                           };
 
             foreach (var seeder in seeders)

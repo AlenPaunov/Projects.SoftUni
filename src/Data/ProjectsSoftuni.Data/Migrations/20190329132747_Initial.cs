@@ -104,6 +104,21 @@ namespace ProjectsSoftuni.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TeamUserStatuses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    ModifiedOn = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeamUserStatuses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -244,16 +259,38 @@ namespace ProjectsSoftuni.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Teams",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    ModifiedOn = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
+                    ProjectId = table.Column<string>(nullable: true),
+                    ApplicationId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Teams", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Teams_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Applications",
                 columns: table => new
                 {
                     ProjectId = table.Column<string>(nullable: false),
-                    UserId = table.Column<string>(nullable: false),
+                    TeamId = table.Column<string>(nullable: false),
                     ApplicationStatusId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Applications", x => new { x.ProjectId, x.UserId });
+                    table.PrimaryKey("PK_Applications", x => new { x.ProjectId, x.TeamId });
                     table.ForeignKey(
                         name: "FK_Applications_ApplicationStatuses_ApplicationStatusId",
                         column: x => x.ApplicationStatusId,
@@ -267,31 +304,38 @@ namespace ProjectsSoftuni.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Applications_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_Applications_Teams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Teams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProjectsUsers",
+                name: "TeamsUsers",
                 columns: table => new
                 {
-                    ProjectId = table.Column<string>(nullable: false),
-                    UserId = table.Column<string>(nullable: false)
+                    TeamId = table.Column<string>(nullable: false),
+                    UserId = table.Column<string>(nullable: false),
+                    TeamUserStatusId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProjectsUsers", x => new { x.ProjectId, x.UserId });
+                    table.PrimaryKey("PK_TeamsUsers", x => new { x.TeamId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_ProjectsUsers_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
+                        name: "FK_TeamsUsers_Teams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Teams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProjectsUsers_AspNetUsers_UserId",
+                        name: "FK_TeamsUsers_TeamUserStatuses_TeamUserStatusId",
+                        column: x => x.TeamUserStatusId,
+                        principalTable: "TeamUserStatuses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TeamsUsers_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -304,9 +348,10 @@ namespace ProjectsSoftuni.Data.Migrations
                 column: "ApplicationStatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Applications_UserId",
+                name: "IX_Applications_TeamId",
                 table: "Applications",
-                column: "UserId");
+                column: "TeamId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -368,14 +413,24 @@ namespace ProjectsSoftuni.Data.Migrations
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectsUsers_UserId",
-                table: "ProjectsUsers",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Settings_IsDeleted",
                 table: "Settings",
                 column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Teams_ProjectId",
+                table: "Teams",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamsUsers_TeamUserStatusId",
+                table: "TeamsUsers",
+                column: "TeamUserStatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamsUsers_UserId",
+                table: "TeamsUsers",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -399,10 +454,10 @@ namespace ProjectsSoftuni.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ProjectsUsers");
+                name: "Settings");
 
             migrationBuilder.DropTable(
-                name: "Settings");
+                name: "TeamsUsers");
 
             migrationBuilder.DropTable(
                 name: "ApplicationStatuses");
@@ -411,10 +466,16 @@ namespace ProjectsSoftuni.Data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Projects");
+                name: "Teams");
+
+            migrationBuilder.DropTable(
+                name: "TeamUserStatuses");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Projects");
 
             migrationBuilder.DropTable(
                 name: "ProjectStatuses");

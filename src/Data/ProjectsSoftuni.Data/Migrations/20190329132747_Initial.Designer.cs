@@ -10,7 +10,7 @@ using ProjectsSoftuni.Data;
 namespace ProjectsSoftuni.Data.Migrations
 {
     [DbContext(typeof(ProjectsSoftuniDbContext))]
-    [Migration("20190325220035_Initial")]
+    [Migration("20190329132747_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -115,15 +115,16 @@ namespace ProjectsSoftuni.Data.Migrations
                 {
                     b.Property<string>("ProjectId");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("TeamId");
 
                     b.Property<int>("ApplicationStatusId");
 
-                    b.HasKey("ProjectId", "UserId");
+                    b.HasKey("ProjectId", "TeamId");
 
                     b.HasIndex("ApplicationStatusId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("TeamId")
+                        .IsUnique();
 
                     b.ToTable("Applications");
                 });
@@ -197,19 +198,6 @@ namespace ProjectsSoftuni.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProjectStatuses");
-                });
-
-            modelBuilder.Entity("ProjectsSoftuni.Data.Models.ProjectUser", b =>
-                {
-                    b.Property<string>("ProjectId");
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("ProjectId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ProjectsUsers");
                 });
 
             modelBuilder.Entity("ProjectsSoftuni.Data.Models.ProjectsSoftuniRole", b =>
@@ -332,6 +320,64 @@ namespace ProjectsSoftuni.Data.Migrations
                     b.ToTable("Settings");
                 });
 
+            modelBuilder.Entity("ProjectsSoftuni.Data.Models.Team", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApplicationId");
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<DateTime?>("ModifiedOn");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<string>("ProjectId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Teams");
+                });
+
+            modelBuilder.Entity("ProjectsSoftuni.Data.Models.TeamUser", b =>
+                {
+                    b.Property<string>("TeamId");
+
+                    b.Property<string>("UserId");
+
+                    b.Property<int>("TeamUserStatusId");
+
+                    b.HasKey("TeamId", "UserId");
+
+                    b.HasIndex("TeamUserStatusId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TeamsUsers");
+                });
+
+            modelBuilder.Entity("ProjectsSoftuni.Data.Models.TeamUserStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<DateTime?>("ModifiedOn");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TeamUserStatuses");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("ProjectsSoftuni.Data.Models.ProjectsSoftuniRole")
@@ -393,9 +439,9 @@ namespace ProjectsSoftuni.Data.Migrations
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("ProjectsSoftuni.Data.Models.ProjectsSoftuniUser", "User")
-                        .WithMany("Applications")
-                        .HasForeignKey("UserId")
+                    b.HasOne("ProjectsSoftuni.Data.Models.Team", "Team")
+                        .WithOne("Application")
+                        .HasForeignKey("ProjectsSoftuni.Data.Models.Application", "TeamId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -407,15 +453,28 @@ namespace ProjectsSoftuni.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("ProjectsSoftuni.Data.Models.ProjectUser", b =>
+            modelBuilder.Entity("ProjectsSoftuni.Data.Models.Team", b =>
                 {
                     b.HasOne("ProjectsSoftuni.Data.Models.Project", "Project")
-                        .WithMany("Team")
+                        .WithMany("Teams")
                         .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("ProjectsSoftuni.Data.Models.TeamUser", b =>
+                {
+                    b.HasOne("ProjectsSoftuni.Data.Models.Team", "Team")
+                        .WithMany("Members")
+                        .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("ProjectsSoftuni.Data.Models.TeamUserStatus", "TeamUserStatus")
+                        .WithMany()
+                        .HasForeignKey("TeamUserStatusId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("ProjectsSoftuni.Data.Models.ProjectsSoftuniUser", "User")
-                        .WithMany("AprovedProjects")
+                        .WithMany("Teams")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

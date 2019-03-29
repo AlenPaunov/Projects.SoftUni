@@ -1,17 +1,16 @@
 ﻿namespace ProjectsSoftuni.Data.Models
 {
+    using ProjectsSoftuni.Data.Common.Models;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-
-    using ProjectsSoftuni.Data.Common.Models;
 
     public class Project : BaseModel<string>
     {
         public Project()
         {
             this.Id = Guid.NewGuid().ToString();
-            this.Team = new HashSet<ProjectUser>();
+            this.Teams = new HashSet<Team>();
             this.Applications = new HashSet<Application>();
         }
 
@@ -36,8 +35,11 @@
 
         public decimal? Budget { get; set; }
 
-        public virtual ICollection<ProjectUser> Team { get; set; }
+        public virtual ICollection<Team> Teams { get; set; }
 
         public virtual ICollection<Application> Applications { get; set; }
+        
+        //public virtual ICollection<ProjectUser> Team { get; set; }
+
     }
 }

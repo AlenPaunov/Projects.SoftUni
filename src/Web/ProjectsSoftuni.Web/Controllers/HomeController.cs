@@ -15,12 +15,12 @@
         private const string ProjectStatusesStr = "ProjectStatuses";
 
         private readonly IProjectService projectService;
-        private readonly IProjectStatusSevice projectStatusSevice;
+        private readonly IProjectStatusSevice projectStatusService;
 
-        public HomeController(IProjectService projectService, IProjectStatusSevice projectStatusSevice)
+        public HomeController(IProjectService projectService, IProjectStatusSevice projectStatusService)
         {
             this.projectService = projectService;
-            this.projectStatusSevice = projectStatusSevice;
+            this.projectStatusService = projectStatusService;
         }
 
         public IActionResult Home()
@@ -83,7 +83,7 @@
                     break;
             }
 
-            var projectStatuses = this.projectStatusSevice.GetAllProjectStatuses();
+            var projectStatuses = this.projectStatusService.GetAllProjectStatuses();
             this.ViewData[ProjectStatusesStr] = projectStatuses.Select(s => new SelectListItem
             {
                 Value = s.Id.ToString(),

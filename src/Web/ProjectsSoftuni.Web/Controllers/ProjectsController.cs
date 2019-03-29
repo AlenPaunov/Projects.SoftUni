@@ -1,11 +1,13 @@
-﻿namespace ProjectsSoftuni.Web.Controllers
+﻿using ProjectsSoftuni.Common;
+
+namespace ProjectsSoftuni.Web.Controllers
 {
     using System.Security.Claims;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using ProjectsSoftuni.Services;
+    using Services;
 
     [Authorize]
     public class ProjectsController : BaseController
@@ -28,7 +30,7 @@
 
             if (project == null)
             {
-                string homeControllerName = this.RemoveControllerFromStr(nameof(HomeController));
+                string homeControllerName = ControllerHelper.RemoveControllerFromStr(nameof(HomeController));
                 return this.RedirectToAction(nameof(HomeController.Index), homeControllerName);
             }
 
@@ -41,21 +43,6 @@
             this.ViewData[IsRejectedProjectStr] = isRejectedProject;
 
             return this.View(project);
-        }
-
-        public async Task<IActionResult> ApplyForProject(string projectId)
-        {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var applyEnabled = await this.projectService.ApplyForProjectAsync(projectId, userId);
-
-            return this.RedirectToAction(nameof(this.Details), new { id = projectId });
-        }
-
-        private string RemoveControllerFromStr(string controllerName)
-        {
-            string result = controllerName.Replace("Controller", null);
-
-            return result;
         }
     }
 }

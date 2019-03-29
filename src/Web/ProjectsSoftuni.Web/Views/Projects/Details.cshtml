@@ -65,7 +65,7 @@
     <a asp-action="Index" asp-controller="Home">Back to List</a> |
     @if (applyProjectEnabled && !isRejectedProject)
     {
-        @Html.ActionLink("Apply for the project", "ApplyForProject", new { projectId = Model.Id })
+        @Html.ActionLink("Applying For Project", "CreateTeam", "Teams", new { projectId = Model.Id })
     }
 
     @if (this.User.IsInRole("Administrator"))

@@ -1,20 +1,17 @@
 ﻿namespace ProjectsSoftuni.Data.Seeding
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
     using ProjectsSoftuni.Common;
     using ProjectsSoftuni.Data.Models;
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public class ProjectStatusesSeeder : ISeeder
     {
         public async Task SeedAsync(ProjectsSoftuniDbContext dbContext, IServiceProvider serviceProvider)
         {
             await SeedProjectStatus(dbContext, GlobalConstants.OpenProjectStatus);
-            await SeedProjectStatus(dbContext, GlobalConstants.InProgresProjectStatus);
+            await SeedProjectStatus(dbContext, GlobalConstants.InProgressProjectStatus);
             await SeedProjectStatus(dbContext, GlobalConstants.FinishedProjectStatus);
         }
 

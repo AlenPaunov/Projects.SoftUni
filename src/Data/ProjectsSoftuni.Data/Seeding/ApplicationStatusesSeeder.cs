@@ -11,7 +11,7 @@
     {
         public async Task SeedAsync(ProjectsSoftuniDbContext dbContext, IServiceProvider serviceProvider)
         {
-            await SeedApplicationStatus(dbContext, GlobalConstants.AprovedApplicationStatus);
+            await SeedApplicationStatus(dbContext, GlobalConstants.ApprovedApplicationStatus);
             await SeedApplicationStatus(dbContext, GlobalConstants.RejectedApplicationStatus);
             await SeedApplicationStatus(dbContext, GlobalConstants.WaitingApplicationStatus);
         }

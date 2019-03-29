@@ -11,6 +11,7 @@
     using ProjectsSoftuni.Data.Models;
     using ProjectsSoftuni.Services.Mapping;
     using ProjectsSoftuni.Services.Models.Projects;
+        using ProjectsSoftuni.Services.Mapping;
 
     public class ProjectService : IProjectService
     {
@@ -134,44 +135,7 @@
 
             return projectViewModel;
         }
-
-        public async Task<bool> ApplyForProjectAsync(string projectId, string userId)
-        {
-            if (string.IsNullOrWhiteSpace(projectId) && string.IsNullOrWhiteSpace(userId))
-            {
-                return false;
-            }
-
-            var project = this.projectsRepository.All().Include(p => p.Status).SingleOrDefault(p => p.Id == projectId);
-            var user = this.userRepository.All().SingleOrDefault(p => p.Id == userId);
-
-            if (project.Status.Name != GlobalConstants.OpenProjectStatus)
-            {
-                return false;
-            }
-
-            if (!this.userService.ApplicationEnabled(userId))
-            {
-                return false;
-            }
-
-            var applicationStatus = this.applicationStatusesRepository
-                .All()
-                .FirstOrDefault(s => s.Name == GlobalConstants.WaitingApplicationStatus);
-
-            var application = new Application()
-            {
-                Project = project,
-                User = user,
-                ApplicationStatus = applicationStatus,
-            };
-
-            await this.applicationsRepository.AddAsync(application);
-            await this.applicationsRepository.SaveChangesAsync();
-
-            return true;
-        }
-
+        
         public ProjectEditViewModel GetProjectEditViewModel(string id)
         {
             var project = this.GetProjectById(id);

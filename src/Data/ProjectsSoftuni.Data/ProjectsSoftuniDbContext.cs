@@ -1,15 +1,14 @@
 ﻿namespace ProjectsSoftuni.Data
 {
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore;
+    using ProjectsSoftuni.Data.Common.Models;
+    using ProjectsSoftuni.Data.Models;
     using System;
     using System.Linq;
     using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
-
-    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore;
-    using ProjectsSoftuni.Data.Common.Models;
-    using ProjectsSoftuni.Data.Models;
 
     public class ProjectsSoftuniDbContext : IdentityDbContext<ProjectsSoftuniUser, ProjectsSoftuniRole, string>
     {
@@ -23,17 +22,21 @@
         {
         }
 
-        public DbSet<Setting> Settings { get; set; }
+        public virtual DbSet<Setting> Settings { get; set; }
 
-        public DbSet<Project> Projects { get; set; }
+        public virtual DbSet<Project> Projects { get; set; }
 
-        public DbSet<ProjectStatus> ProjectStatuses { get; set; }
+        public virtual DbSet<ProjectStatus> ProjectStatuses { get; set; }
 
-        public DbSet<ApplicationStatus> ApplicationStatuses { get; set; }
+        public virtual DbSet<ApplicationStatus> ApplicationStatuses { get; set; }
 
-        public DbSet<ProjectUser> ProjectsUsers { get; set; }
+        public virtual DbSet<Application> Applications { get; set; }
 
-        public DbSet<Application> Applications { get; set; }
+        public virtual DbSet<Team> Teams { get; set; }
+
+        public virtual DbSet<TeamUser> TeamsUsers { get; set; }
+
+        public virtual DbSet<TeamUserStatus> TeamUserStatuses { get; set; }
 
         public override int SaveChanges() => this.SaveChanges(true);
 
@@ -110,9 +113,13 @@
 
         private static void ConfigureApplicationRelations(ModelBuilder builder)
         {
-            builder.Entity<Application>().HasKey(a => new { a.ProjectId, a.UserId });
+            //builder.Entity<Application>().HasKey(a => new { a.ProjectId, a.UserId });
 
-            builder.Entity<ProjectUser>().HasKey(pu => new { pu.ProjectId, pu.UserId });
+            //builder.Entity<ProjectUser>().HasKey(pu => new { pu.ProjectId, pu.UserId });
+
+            builder.Entity<TeamUser>().HasKey(a => new { a.TeamId, a.UserId });
+
+            builder.Entity<Application>().HasKey(a => new { a.ProjectId, a.TeamId });
 
             builder.Entity<Application>()
                 .HasOne(a => a.ApplicationStatus)
@@ -125,6 +132,18 @@
               .WithMany()
               .HasForeignKey(e => e.StatusId)
               .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Project>()
+                .HasMany(p => p.Teams)
+                .WithOne(t => t.Project)
+                .HasForeignKey(t => t.ProjectId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<TeamUser>()
+                .HasOne(tu => tu.TeamUserStatus)
+                .WithMany()
+                .HasForeignKey(tu => tu.TeamUserStatusId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         private static void SetIsDeletedQueryFilter<T>(ModelBuilder builder)

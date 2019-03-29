@@ -1,7 +1,5 @@
 ﻿namespace ProjectsSoftuni.Web
 {
-    using System.Reflection;
-
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -24,6 +22,7 @@
     using ProjectsSoftuni.Services.Mapping;
     using ProjectsSoftuni.Services.Messaging;
     using ProjectsSoftuni.Web.ViewModels;
+    using System.Reflection;
 
     public class Startup
     {
@@ -41,6 +40,7 @@
             // TODO: Add pooling when this bug is fixed: https://github.com/aspnet/EntityFrameworkCore/issues/9741
             services.AddDbContext<ProjectsSoftuniDbContext>(
                 options => options
+                .UseLazyLoadingProxies()
                 .UseSqlServer(this.configuration.GetConnectionString("DefaultConnection")));
 
             services
@@ -104,6 +104,8 @@
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IProjectStatusSevice, ProjectStatusSevice>();
             services.AddTransient<IApplicationService, ApplicationService>();
+            services.AddTransient<ITeamService, TeamService>();
+            services.AddTransient<ITeamUserStatusService, TeamUserStatusService>();
 
             // Application services
             services.AddScoped<IRoleService, RoleService>();

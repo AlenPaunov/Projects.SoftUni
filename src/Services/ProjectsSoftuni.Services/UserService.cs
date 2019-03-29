@@ -1,14 +1,18 @@
-﻿namespace ProjectsSoftuni.Services
-{
-    using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
-    using Microsoft.EntityFrameworkCore;
+namespace ProjectsSoftuni.Services
+{
     using ProjectsSoftuni.Common;
     using ProjectsSoftuni.Data.Common.Repositories;
     using ProjectsSoftuni.Data.Models;
+    using ProjectsSoftuni.Services.Mapping;
+    using System.Linq;
 
     public class UserService : IUserService
     {
+        private const int MaxAllowedProject = 3;
+
         private readonly IRepository<ProjectsSoftuniUser> userRepository;
 
         public UserService(IRepository<ProjectsSoftuniUser> userRepository)
@@ -18,19 +22,17 @@
 
         public bool ApplicationEnabled(string userId)
         {
-            var user = this.GetUserById(userId);
+            var user = this.GetUserById(userId).Result;
+            var userTeams = user.Teams.Select(t => t.Team).ToList();
 
-            if (user.AprovedProjects.Any(p => p.Project.Status.Name == GlobalConstants.InProgresProjectStatus))
+            if (userTeams.Any(ut => ut.Application.ApplicationStatus.Name == GlobalConstants.WaitingApplicationStatus))
             {
                 return false;
             }
 
-            if (user.Applications.Any(a => a.ApplicationStatus.Name == GlobalConstants.WaitingApplicationStatus))
-            {
-                return false;
-            }
+            var userNotFinishedProjects = userTeams.Where(ut => ut.Project.Status.Name != GlobalConstants.FinishedProjectStatus);
 
-            return true;
+            return userNotFinishedProjects.Count() < MaxAllowedProject;
         }
 
         public bool IsRejectedForTheProject(string userId, string projectId)
@@ -38,28 +40,32 @@
             Validator.ThrowIfStringIsNullOrEmpty(projectId, "ProjectId can't be null. UserService");
 
             var user = this.GetUserById(userId);
-            var isRejected = false;
+            var userTeamForProject = user?.Result
+                                          .Teams
+                                          .SingleOrDefault(t => t.Team.ProjectId == projectId);
 
-            if (user?.Applications.SingleOrDefault(a => a.ProjectId == projectId)?.ApplicationStatus.Name == GlobalConstants.RejectedApplicationStatus)
+            var isRejected = userTeamForProject?
+                                 .Team
+                                 .Application
+                                 .ApplicationStatus
+                                 .Name == GlobalConstants.RejectedApplicationStatus;
+
+            if (isRejected)
             {
-                isRejected = true;
+                return true;
             }
 
-            return isRejected;
+            return userTeamForProject != null;
         }
 
-        private ProjectsSoftuniUser GetUserById(string userId)
+        private async Task<ProjectsSoftuniUser> GetUserById(string userId)
         {
             Validator.ThrowIfStringIsNullOrEmpty(userId, "UserId can't be null. UserService");
 
-            var user = this.userRepository
+            var user = await this.userRepository
                 .All()
-                .Include(u => u.Applications)
-                    .ThenInclude(a => a.ApplicationStatus)
-                .Include(u => u.AprovedProjects)
-                    .ThenInclude(ap => ap.Project)
-                    .ThenInclude(p => p.Status)
-                .SingleOrDefault(u => u.Id == userId);
+                .SingleOrDefaultAsync(u => u.Id == userId);
+
             return user;
         }
     }

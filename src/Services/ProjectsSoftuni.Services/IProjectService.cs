@@ -24,8 +24,6 @@
 
         ProjectDetailsViewModel GetProjectDetailsById(string id);
 
-        Task<bool> ApplyForProjectAsync(string projectId, string userId);
-
         ProjectEditViewModel GetProjectEditViewModel(string id);
 
         Task<string> Edit(ProjectEditViewModel model);

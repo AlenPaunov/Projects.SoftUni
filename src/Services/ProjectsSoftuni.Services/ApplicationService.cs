@@ -2,14 +2,13 @@
 
 namespace ProjectsSoftuni.Services
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-
     using Microsoft.EntityFrameworkCore;
     using ProjectsSoftuni.Data.Common.Repositories;
     using ProjectsSoftuni.Data.Models;
     using ProjectsSoftuni.Services.Mapping;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public class ApplicationService : IApplicationService
     {
@@ -18,15 +17,30 @@ namespace ProjectsSoftuni.Services
         private readonly IRepository<Application> applicationsRepository;
         private readonly IRepository<ApplicationStatus> applicationStatusesRepository;
         private readonly IRepository<Project> projectsRepository;
+        private readonly IRepository<ProjectsSoftuniUser> userRepository;
+        private readonly IRepository<TeamUser> teamUserRepository;
+        private readonly IRepository<Team> teamRepository;
+        private readonly IUserService userService;
+        private readonly ITeamUserStatusService teamUserStatusService;
 
         public ApplicationService(
             IRepository<Application> applicationsRepository,
             IRepository<ApplicationStatus> applicationStatusesRepository,
-            IRepository<Project> projectsRepository)
+            IRepository<Project> projectsRepository,
+            IRepository<ProjectsSoftuniUser> userRepository,
+            IUserService userService,
+            ITeamUserStatusService teamUserStatusService,
+            IRepository<Team> teamRepository,
+            IRepository<TeamUser> teamUserRepository)
         {
             this.applicationsRepository = applicationsRepository;
             this.applicationStatusesRepository = applicationStatusesRepository;
             this.projectsRepository = projectsRepository;
+            this.userRepository = userRepository;
+            this.userService = userService;
+            this.teamUserStatusService = teamUserStatusService;
+            this.teamRepository = teamRepository;
+            this.teamUserRepository = teamUserRepository;
         }
 
         public async Task<ICollection<TModel>> GetAllByProjectId<TModel>(string projectId)
@@ -51,7 +65,7 @@ namespace ProjectsSoftuni.Services
         //        .All()
         //        .SingleOrDefaultAsync(a => a.ProjectId == projectId && a.UserId == userId);
 
-        //    var applicationStatusId = this.GetApplicationStatusIdByName(GlobalConstants.AprovedApplicationStatus);
+        //    var applicationStatusId = this.GetApplicationStatusIdByName(GlobalConstants.ApprovedApplicationStatus);
 
         //    if (applicationStatusId == InvalidApplicationStatusId)
         //    {
@@ -62,6 +76,58 @@ namespace ProjectsSoftuni.Services
 
 
         //}
+
+        public async Task<bool> ApplyTeamForProjectAsync(string teamName, string projectId, string userId)
+        {
+            if (string.IsNullOrWhiteSpace(projectId) && string.IsNullOrWhiteSpace(userId))
+            {
+                return false;
+            }
+
+            var project = this.projectsRepository.All().SingleOrDefault(p => p.Id == projectId);
+            var user = this.userRepository.All().SingleOrDefault(p => p.Id == userId);
+
+            if (project == null || user == null)
+            {
+                return false;
+            }
+
+            if (project.Status.Name != GlobalConstants.OpenProjectStatus)
+            {
+                return false;
+            }
+
+            if (!this.userService.ApplicationEnabled(userId))
+            {
+                return false;
+            }
+
+            var applicationStatus = this.applicationStatusesRepository
+                .All()
+                .FirstOrDefault(s => s.Name == GlobalConstants.WaitingApplicationStatus);
+
+            var team = new Team() { Name = teamName, ProjectId = projectId };
+            await this.teamRepository.AddAsync(team);
+
+            var teamUserStatusId = this.teamUserStatusService.GetIdByName(GlobalConstants.TeamUserStatusTeamLead).Result;
+            var teamUser = new TeamUser() { TeamId = team.Id, UserId = userId, TeamUserStatusId = teamUserStatusId };
+            await this.teamUserRepository.AddAsync(teamUser);
+
+            var application = new Application()
+            {
+                ProjectId = projectId,
+                TeamId = team.Id,
+                ApplicationStatus = applicationStatus,
+            };
+
+            await this.applicationsRepository.AddAsync(application);
+
+            await this.teamRepository.SaveChangesAsync();
+            await this.teamUserRepository.SaveChangesAsync();
+            await this.applicationsRepository.SaveChangesAsync();
+
+            return true;
+        }
 
         private Project GetProjectById(string id)
         {
