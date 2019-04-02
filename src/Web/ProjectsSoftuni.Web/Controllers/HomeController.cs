@@ -1,4 +1,6 @@
-﻿namespace ProjectsSoftuni.Web.Controllers
+﻿using ProjectsSoftuni.Services.Contracts;
+
+namespace ProjectsSoftuni.Web.Controllers
 {
     using System.Linq;
     using System.Security.Claims;

@@ -1,4 +1,6 @@
-﻿namespace ProjectsSoftuni.Services
+﻿using ProjectsSoftuni.Services.Contracts;
+
+namespace ProjectsSoftuni.Services
 {
     using System.Threading.Tasks;
 

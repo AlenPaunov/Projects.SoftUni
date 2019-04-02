@@ -1,10 +1,10 @@
-﻿using ProjectsSoftuni.Common;
-
-namespace ProjectsSoftuni.Services
+﻿namespace ProjectsSoftuni.Services
 {
     using Microsoft.EntityFrameworkCore;
+    using ProjectsSoftuni.Common;
     using ProjectsSoftuni.Data.Common.Repositories;
     using ProjectsSoftuni.Data.Models;
+    using ProjectsSoftuni.Services.Contracts;
     using ProjectsSoftuni.Services.Mapping;
     using System.Collections.Generic;
     using System.Linq;
@@ -15,32 +15,32 @@ namespace ProjectsSoftuni.Services
         private const int InvalidApplicationStatusId = -1;
 
         private readonly IRepository<Application> applicationsRepository;
-        private readonly IRepository<ApplicationStatus> applicationStatusesRepository;
         private readonly IRepository<Project> projectsRepository;
         private readonly IRepository<ProjectsSoftuniUser> userRepository;
         private readonly IRepository<TeamUser> teamUserRepository;
         private readonly IRepository<Team> teamRepository;
         private readonly IUserService userService;
         private readonly ITeamUserStatusService teamUserStatusService;
+        private readonly IApplicationStatusService applicationStatusService;
 
         public ApplicationService(
             IRepository<Application> applicationsRepository,
-            IRepository<ApplicationStatus> applicationStatusesRepository,
             IRepository<Project> projectsRepository,
             IRepository<ProjectsSoftuniUser> userRepository,
             IUserService userService,
             ITeamUserStatusService teamUserStatusService,
             IRepository<Team> teamRepository,
-            IRepository<TeamUser> teamUserRepository)
+            IRepository<TeamUser> teamUserRepository,
+            IApplicationStatusService applicationStatusService)
         {
             this.applicationsRepository = applicationsRepository;
-            this.applicationStatusesRepository = applicationStatusesRepository;
             this.projectsRepository = projectsRepository;
             this.userRepository = userRepository;
             this.userService = userService;
             this.teamUserStatusService = teamUserStatusService;
             this.teamRepository = teamRepository;
             this.teamUserRepository = teamUserRepository;
+            this.applicationStatusService = applicationStatusService;
         }
 
         public async Task<ICollection<TModel>> GetAllByProjectId<TModel>(string projectId)
@@ -59,23 +59,34 @@ namespace ProjectsSoftuni.Services
             return applications;
         }
 
-        //public async Task ApproveApplication(string projectId, string userId)
-        //{
-        //    var application = await this.applicationsRepository
-        //        .All()
-        //        .SingleOrDefaultAsync(a => a.ProjectId == projectId && a.UserId == userId);
+        public async Task<bool> ApproveApplicationAsync(string projectId, string teamId)
+        {
+            if (projectId == null || teamId == null)
+            {
+                return false;
+            }
 
-        //    var applicationStatusId = this.GetApplicationStatusIdByName(GlobalConstants.ApprovedApplicationStatus);
+            var application = await this.applicationsRepository
+                .All()
+                .SingleOrDefaultAsync(a => a.ProjectId == projectId && a.TeamId == teamId);
 
-        //    if (applicationStatusId == InvalidApplicationStatusId)
-        //    {
-        //        return null;
-        //    }
+            if (application == null)
+            {
+                return false;
+            }
 
-        //    application.ApplicationStatusId = applicationStatusId;
+            var applicationStatusId = await this.applicationStatusService.GetIdByNameAsync(GlobalConstants.ApprovedApplicationStatus);
 
+            if (applicationStatusId == InvalidApplicationStatusId)
+            {
+                return false;
+            }
 
-        //}
+            application.ApplicationStatusId = applicationStatusId;
+
+            await this.applicationsRepository.SaveChangesAsync();
+            return true;
+        }
 
         public async Task<bool> ApplyTeamForProjectAsync(string teamName, string projectId, string userId)
         {
@@ -102,9 +113,7 @@ namespace ProjectsSoftuni.Services
                 return false;
             }
 
-            var applicationStatus = this.applicationStatusesRepository
-                .All()
-                .FirstOrDefault(s => s.Name == GlobalConstants.WaitingApplicationStatus);
+            var applicationStatusId = await this.applicationStatusService.GetIdByNameAsync(GlobalConstants.WaitingApplicationStatus);
 
             var team = new Team() { Name = teamName, ProjectId = projectId };
             await this.teamRepository.AddAsync(team);
@@ -117,7 +126,7 @@ namespace ProjectsSoftuni.Services
             {
                 ProjectId = projectId,
                 TeamId = team.Id,
-                ApplicationStatus = applicationStatus,
+                ApplicationStatusId = applicationStatusId,
             };
 
             await this.applicationsRepository.AddAsync(application);
@@ -125,7 +134,7 @@ namespace ProjectsSoftuni.Services
             await this.teamRepository.SaveChangesAsync();
             await this.teamUserRepository.SaveChangesAsync();
             await this.applicationsRepository.SaveChangesAsync();
-
+            
             return true;
         }
 
@@ -139,28 +148,6 @@ namespace ProjectsSoftuni.Services
             var project = this.projectsRepository.All().SingleOrDefault(p => p.Id == id);
 
             return project;
-        }
-
-        private int GetApplicationStatusIdByName(string name)
-        {
-            int applicationStatusId = -1;
-
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return applicationStatusId;
-            }
-
-            var applicationStatus = this.applicationStatusesRepository
-                .AllAsNoTracking()
-                .SingleOrDefaultAsync(s => s.Name == name);
-
-            if (applicationStatus == null)
-            {
-                return applicationStatusId;
-            }
-
-            applicationStatusId = applicationStatus.Id;
-            return applicationStatusId;
         }
     }
 }

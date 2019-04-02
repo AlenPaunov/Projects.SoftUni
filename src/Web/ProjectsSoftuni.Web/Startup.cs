@@ -1,4 +1,6 @@
-﻿namespace ProjectsSoftuni.Web
+﻿using ProjectsSoftuni.Services.Contracts;
+
+namespace ProjectsSoftuni.Web
 {
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -106,6 +108,7 @@
             services.AddTransient<IApplicationService, ApplicationService>();
             services.AddTransient<ITeamService, TeamService>();
             services.AddTransient<ITeamUserStatusService, TeamUserStatusService>();
+            services.AddTransient<IApplicationStatusService, ApplicationStatusService>();
 
             // Application services
             services.AddScoped<IRoleService, RoleService>();

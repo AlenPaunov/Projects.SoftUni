@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using ProjectsSoftuni.Services.Contracts;
 
 namespace ProjectsSoftuni.Services
 {

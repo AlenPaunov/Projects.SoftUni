@@ -1,4 +1,6 @@
-﻿namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
+﻿using ProjectsSoftuni.Services.Contracts;
+
+namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
 {
     using System.Linq;
     using System.Threading.Tasks;

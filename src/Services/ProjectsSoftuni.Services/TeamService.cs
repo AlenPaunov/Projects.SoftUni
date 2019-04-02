@@ -1,10 +1,12 @@
-﻿using ProjectsSoftuni.Common;
-using ProjectsSoftuni.Data.Common.Repositories;
-using ProjectsSoftuni.Data.Models;
-using System.Threading.Tasks;
-
-namespace ProjectsSoftuni.Services
+﻿namespace ProjectsSoftuni.Services
 {
+    using System.Threading.Tasks;
+
+    using ProjectsSoftuni.Common;
+    using ProjectsSoftuni.Data.Common.Repositories;
+    using ProjectsSoftuni.Data.Models;
+    using ProjectsSoftuni.Services.Contracts;
+
     public class TeamService : ITeamService
     {
         private readonly IRepository<Team> teamRepository;

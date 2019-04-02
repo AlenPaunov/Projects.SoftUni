@@ -1,4 +1,6 @@
-﻿namespace ProjectsSoftuni.Web.Areas.Identity.Pages.Account
+﻿using ProjectsSoftuni.Services.Contracts;
+
+namespace ProjectsSoftuni.Web.Areas.Identity.Pages.Account
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;

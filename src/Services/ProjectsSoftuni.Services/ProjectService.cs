@@ -1,7 +1,8 @@
-﻿namespace ProjectsSoftuni.Services
+﻿using ProjectsSoftuni.Services.Contracts;
+
+namespace ProjectsSoftuni.Services
 {
     using System;
-    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -9,9 +10,7 @@
     using ProjectsSoftuni.Common;
     using ProjectsSoftuni.Data.Common.Repositories;
     using ProjectsSoftuni.Data.Models;
-    using ProjectsSoftuni.Services.Mapping;
     using ProjectsSoftuni.Services.Models.Projects;
-        using ProjectsSoftuni.Services.Mapping;
 
     public class ProjectService : IProjectService
     {
@@ -135,7 +134,7 @@
 
             return projectViewModel;
         }
-        
+
         public ProjectEditViewModel GetProjectEditViewModel(string id)
         {
             var project = this.GetProjectById(id);

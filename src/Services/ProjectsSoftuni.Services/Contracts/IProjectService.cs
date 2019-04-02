@@ -1,10 +1,8 @@
-﻿namespace ProjectsSoftuni.Services
+﻿namespace ProjectsSoftuni.Services.Contracts
 {
     using System;
-    using System.Linq;
     using System.Threading.Tasks;
 
-    using ProjectsSoftuni.Data.Models;
     using ProjectsSoftuni.Services.Models.Projects;
 
     public interface IProjectService

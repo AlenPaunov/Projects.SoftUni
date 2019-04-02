@@ -2,11 +2,9 @@
 {
     public class ApplicationViewModel
     {
-        public string UserId { get; set; }
+        public string TeamId { get; set; }
 
-        public string UserUsername { get; set; }
-
-        public string UserEmail { get; set; }
+        public string TeamName { get; set; }
 
         public string ProjectId { get; set; }
 

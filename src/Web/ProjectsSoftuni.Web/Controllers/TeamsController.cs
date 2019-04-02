@@ -1,7 +1,8 @@
-﻿using System.Security.Claims;
-using ProjectsSoftuni.Common;
-using ProjectsSoftuni.Services;
+﻿using ProjectsSoftuni.Common;
+using ProjectsSoftuni.Services.Contracts;
 using ProjectsSoftuni.Web.ViewModels.Teams;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ProjectsSoftuni.Web.Controllers
 {
@@ -27,24 +28,23 @@ namespace ProjectsSoftuni.Web.Controllers
 
 
         [HttpPost]
-        public IActionResult CreateTeam(CreateTeamInputModel model)
+        public async Task<IActionResult> CreateTeam(CreateTeamInputModel model)
         {
+            if (!this.ModelState.IsValid)
+            {
+                return this.RedirectToAction(
+                    nameof(HomeController.Index),
+                    ControllerHelper.RemoveControllerFromStr(nameof(HomeController)));
+            }
+
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var teamId = this.teamService.CreteTeam(model.Name, model.ProjectId, userId);
+            var teamId = await this.teamService.CreteTeam(model.Name, model.ProjectId, userId);
 
             return this.RedirectToAction(
                 nameof(ProjectsController.Details),
                 ControllerHelper.RemoveControllerFromStr(nameof(ProjectsController)),
                 new { id = model.ProjectId });
         }
-
-        //public async Task<IActionResult> CreateTeam(string projectId)
-        //{
-        //    var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-        //    var applyEnabled = await this.projectService.ApplyForProjectAsync(projectId, userId);
-
-        //    return this.RedirectToAction(nameof(this.Details), new { id = projectId });
-        //}
     }
 }

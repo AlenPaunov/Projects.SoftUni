@@ -1,4 +1,4 @@
-﻿namespace ProjectsSoftuni.Services
+﻿namespace ProjectsSoftuni.Services.Contracts
 {
     public interface IUserService
     {

@@ -3,8 +3,7 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Username</th>
-            <th>Email</th>
+            <th>Team Name</th>
             <th>Application Status</th>
             <th>Actions</th>
         </tr>
@@ -13,12 +12,11 @@
         @foreach (var application in Model.Applications)
         {
             <tr>
-                <td>@application.UserUsername</td>
-                <td>@application.UserEmail</td>
+                <td>@application.TeamName</td>
                 <td>@application.ApplicationStatusName</td>
                 <td>
-                    @Html.ActionLink("Approve", "Approve", new { projectId = application.ProjectId, userId = application.UserId }) |
-                    @Html.ActionLink("Reject", "Reject", new { projectId = application.ProjectId, userId = application.UserId })
+                    @Html.ActionLink("Approve", "Approve", "Applications", new { projectId = application.ProjectId, teamId = application.TeamId }) |
+                    @Html.ActionLink("Reject", "Reject", new { projectId = application.ProjectId, teamId = application.TeamId })
                 </td>
             </tr>
         }
