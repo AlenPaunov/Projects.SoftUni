@@ -1,14 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
-using ProjectsSoftuni.Services.Contracts;
-
-namespace ProjectsSoftuni.Services
+﻿namespace ProjectsSoftuni.Services
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using Microsoft.EntityFrameworkCore;
     using ProjectsSoftuni.Common;
     using ProjectsSoftuni.Data.Common.Repositories;
     using ProjectsSoftuni.Data.Models;
+    using ProjectsSoftuni.Services.Contracts;
     using ProjectsSoftuni.Services.Mapping;
-    using System.Linq;
 
     public class UserService : IUserService
     {

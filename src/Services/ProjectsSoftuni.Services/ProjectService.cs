@@ -1,8 +1,7 @@
-﻿using ProjectsSoftuni.Services.Contracts;
-
-namespace ProjectsSoftuni.Services
+﻿namespace ProjectsSoftuni.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -10,6 +9,8 @@ namespace ProjectsSoftuni.Services
     using ProjectsSoftuni.Common;
     using ProjectsSoftuni.Data.Common.Repositories;
     using ProjectsSoftuni.Data.Models;
+    using ProjectsSoftuni.Services.Contracts;
+    using ProjectsSoftuni.Services.Mapping;
     using ProjectsSoftuni.Services.Models.Projects;
 
     public class ProjectService : IProjectService
@@ -182,6 +183,17 @@ namespace ProjectsSoftuni.Services
             await this.projectsRepository.SaveChangesAsync();
 
             return projectFromDb.Id;
+        }
+
+        public async Task<ICollection<TModel>> GetProjectsByUserIdAsync<TModel>(string userId)
+        {
+            var projects = await this.projectsRepository
+                .AllAsNoTracking()
+                .Where(u => u.Teams.Any(t => t.Members.Any(m => m.UserId == userId)))
+                .To<TModel>()
+                .ToListAsync();
+
+            return projects;
         }
 
         private Project GetProjectById(string id)

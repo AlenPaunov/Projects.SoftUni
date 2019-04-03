@@ -1,6 +1,9 @@
 ﻿namespace ProjectsSoftuni.Web.Areas.Administration.ViewModels.Applications
 {
-    public class ApplicationViewModel
+    using ProjectsSoftuni.Data.Models;
+    using ProjectsSoftuni.Services.Mapping;
+
+    public class ApplicationViewModel : IMapFrom<Application>
     {
         public string TeamId { get; set; }
 

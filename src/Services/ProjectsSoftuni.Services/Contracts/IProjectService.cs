@@ -1,6 +1,7 @@
 ﻿namespace ProjectsSoftuni.Services.Contracts
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using ProjectsSoftuni.Services.Models.Projects;
@@ -25,5 +26,7 @@
         ProjectEditViewModel GetProjectEditViewModel(string id);
 
         Task<string> Edit(ProjectEditViewModel model);
+
+        Task<ICollection<TModel>> GetProjectsByUserIdAsync<TModel>(string userId);
     }
 }

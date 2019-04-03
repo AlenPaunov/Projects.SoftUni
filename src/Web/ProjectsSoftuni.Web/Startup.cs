@@ -1,7 +1,7 @@
-﻿using ProjectsSoftuni.Services.Contracts;
-
-namespace ProjectsSoftuni.Web
+﻿namespace ProjectsSoftuni.Web
 {
+    using System.Reflection;
+
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -20,11 +20,12 @@ namespace ProjectsSoftuni.Web
     using ProjectsSoftuni.Data.Repositories;
     using ProjectsSoftuni.Data.Seeding;
     using ProjectsSoftuni.Services;
+    using ProjectsSoftuni.Services.Contracts;
     using ProjectsSoftuni.Services.Data;
     using ProjectsSoftuni.Services.Mapping;
     using ProjectsSoftuni.Services.Messaging;
+    using ProjectsSoftuni.Services.Models.Projects;
     using ProjectsSoftuni.Web.ViewModels;
-    using System.Reflection;
 
     public class Startup
     {
@@ -117,7 +118,10 @@ namespace ProjectsSoftuni.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
+            AutoMapperConfig.RegisterMappings(
+                typeof(ErrorViewModel).GetTypeInfo().Assembly,
+                typeof(ProjectDetailsViewModel).GetTypeInfo().Assembly,
+                typeof(ProjectDetailsViewModel).GetTypeInfo().Assembly);
 
             // Seed data on application startup
             using (var serviceScope = app.ApplicationServices.CreateScope())
