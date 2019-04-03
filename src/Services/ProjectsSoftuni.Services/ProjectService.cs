@@ -1,10 +1,5 @@
 ﻿namespace ProjectsSoftuni.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-
     using Microsoft.EntityFrameworkCore;
     using ProjectsSoftuni.Common;
     using ProjectsSoftuni.Data.Common.Repositories;
@@ -12,49 +7,50 @@
     using ProjectsSoftuni.Services.Contracts;
     using ProjectsSoftuni.Services.Mapping;
     using ProjectsSoftuni.Services.Models.Projects;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public class ProjectService : IProjectService
     {
+        private const int InvalidApplicationId = -1;
+
         private readonly IRepository<Project> projectsRepository;
         private readonly IRepository<ProjectStatus> projectStatusRepository;
-        private readonly IRepository<ProjectsSoftuniUser> userRepository;
-        private readonly IRepository<Application> applicationsRepository;
-        private readonly IRepository<ApplicationStatus> applicationStatusesRepository;
         private readonly IUserService userService;
+        private readonly IApplicationStatusService applicationStatusService;
 
         public ProjectService(
             IRepository<Project> projectsRepository,
             IRepository<ProjectStatus> projectStatusRepository,
-            IRepository<ProjectsSoftuniUser> userRepository,
-            IRepository<Application> applicationsRepository,
-            IRepository<ApplicationStatus> applicationStatusesRepository,
-            IUserService userService)
+            IUserService userService,
+            IApplicationStatusService applicationStatusService)
         {
             this.projectsRepository = projectsRepository;
             this.projectStatusRepository = projectStatusRepository;
-            this.userRepository = userRepository;
-            this.applicationsRepository = applicationsRepository;
-            this.applicationStatusesRepository = applicationStatusesRepository;
             this.userService = userService;
+            this.applicationStatusService = applicationStatusService;
         }
 
-        public ProjectsIndexViewModel GetProjectsWithWaitingApplicationStatus()
+        public async Task<ICollection<TModel>> GetAllByApplicationStatusNameAsync<TModel>(string applicationStatus)
         {
+            var applicationId = await this.applicationStatusService.GetIdByNameAsync(applicationStatus);
+
+            if (applicationId == InvalidApplicationId)
+            {
+                return null;
+            }
+
             // TODO: Test sorting
-            var projects = this.projectsRepository
-                .All()
-                .Where(p => p.Applications.Any(u => u.ApplicationStatus.Name == GlobalConstants.WaitingApplicationStatus))
+            var projects = await this.projectsRepository
+                .AllAsNoTracking()
+                .Where(p => p.Applications.Any(u => u.ApplicationStatusId == applicationId))
                 .OrderBy(p => p.CreatedOn)
-                .Select(p => new ProjectIndexViewModel()
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Owner = p.Owner,
-                });
+                .To<TModel>()
+                .ToListAsync();
 
-            var projectsViewModel = new ProjectsIndexViewModel() { Projects = projects };
-
-            return projectsViewModel;
+            return projects;
         }
 
         public async Task<string> CreateAsync(string name, string description, string owner, DateTime? dueDate, string gitHubLink, string deployLink, decimal? budget)
@@ -81,29 +77,16 @@
             return project.Id;
         }
 
-        public ProjectsIndexViewModel GetAllProjects()
+        public async Task<ICollection<TModel>> GetAllAsync<TModel>()
         {
             // TODO: Test sorting
-            var projects = this.projectsRepository
+            var projects = await this.projectsRepository
                 .AllAsNoTracking()
                 .OrderBy(p => p.CreatedOn)
-                .Select(p => new ProjectIndexViewModel()
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Owner = p.Owner,
-                    Status = p.Status.Name,
-                });
+                .To<TModel>()
+                .ToListAsync();
 
-            //var projects = this.projectsRepository
-            //   .AllAsNoTracking()
-            //   .OrderBy(p => p.CreatedOn)
-            //   .AsQueryable()
-            //   .To<TModel>();
-
-            var projectsViewModel = new ProjectsIndexViewModel() { Projects = projects };
-
-            return projectsViewModel;
+            return projects;
         }
 
         public ProjectDetailsViewModel GetProjectDetailsById(string id)

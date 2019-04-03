@@ -1,11 +1,15 @@
 ﻿@model ProjectsSoftuni.Web.Models.PaginatedList<ProjectsSoftuni.Services.Models.Projects.ProjectIndexViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Admin Index";
     var projectStatuses = this.ViewData["ProjectStatuses"] as IEnumerable<SelectListItem>;
 }
 
 <h1>All Projects</h1>
+
+<p>
+    <a asp-action="Create" asp-controller="Projects">Create New</a>
+</p>
 
 <form asp-action="Index" method="get">
     <div class="form-actions no-color">

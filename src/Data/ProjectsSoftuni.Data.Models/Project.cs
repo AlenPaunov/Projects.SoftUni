@@ -1,9 +1,10 @@
 ﻿namespace ProjectsSoftuni.Data.Models
 {
-    using ProjectsSoftuni.Data.Common.Models;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+
+    using ProjectsSoftuni.Data.Common.Models;
 
     public class Project : BaseModel<string>
     {

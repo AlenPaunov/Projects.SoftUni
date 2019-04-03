@@ -8,7 +8,7 @@
 
     public interface IProjectService
     {
-        ProjectsIndexViewModel GetProjectsWithWaitingApplicationStatus();
+        Task<ICollection<TModel>> GetAllByApplicationStatusNameAsync<TModel>(string applicationStatus);
 
         Task<string> CreateAsync(
             string name,
@@ -19,7 +19,7 @@
             string deployLink,
             decimal? budget);
 
-        ProjectsIndexViewModel GetAllProjects();
+        Task<ICollection<TModel>> GetAllAsync<TModel>();
 
         ProjectDetailsViewModel GetProjectDetailsById(string id);
 

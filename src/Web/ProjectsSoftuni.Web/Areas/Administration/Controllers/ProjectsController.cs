@@ -1,13 +1,12 @@
-﻿using ProjectsSoftuni.Services.Contracts;
-
-namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
+﻿namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
 {
     using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
-    using ProjectsSoftuni.Services;
+    using ProjectsSoftuni.Common;
+    using ProjectsSoftuni.Services.Contracts;
     using ProjectsSoftuni.Services.Models.Projects;
     using ProjectsSoftuni.Web.Areas.Administration.ViewModels.Applications;
     using ProjectsSoftuni.Web.Areas.Administration.ViewModels.Projects;
@@ -26,13 +25,6 @@ namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
             this.projectService = projectService;
             this.projectStatusService = projectStatusService;
             this.applicationService = applicationService;
-        }
-
-        public IActionResult Index()
-        {
-            var projects = this.projectService.GetProjectsWithWaitingApplicationStatus();
-
-            return this.View(projects);
         }
 
         [HttpGet]
@@ -59,7 +51,8 @@ namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
                     input.DeployLink,
                     input.Budget);
 
-            return this.RedirectToAction(nameof(this.Index));
+            var controllerName = ControllerHelper.RemoveControllerFromStr(nameof(HomeController));
+            return this.RedirectToAction(nameof(HomeController.Index), controllerName);
         }
 
         [HttpGet]
@@ -70,7 +63,8 @@ namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
 
             if (projectViewModel == null)
             {
-                return this.RedirectToAction(nameof(this.Index));
+                var controllerName = ControllerHelper.RemoveControllerFromStr(nameof(HomeController));
+                return this.RedirectToAction(nameof(HomeController.Index), controllerName);
             }
 
             this.ViewData[ProjectStatusesStr] = projectStatuses.Select(s => new SelectListItem
@@ -91,13 +85,14 @@ namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
             }
 
             var projectId = await this.projectService.Edit(inputModel);
+            var controllerName = ControllerHelper.RemoveControllerFromStr(nameof(HomeController));
 
             if (projectId == null)
             {
-                return this.RedirectToAction(nameof(this.Index));
+                return this.RedirectToAction(nameof(HomeController.Index), controllerName);
             }
 
-            return this.RedirectToAction(nameof(this.Index));
+            return this.RedirectToAction(nameof(HomeController.Index), controllerName);
         }
 
         public async Task<IActionResult> Details(string id)
@@ -107,7 +102,8 @@ namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
 
             if (project == null)
             {
-                return this.RedirectToAction(nameof(this.Index));
+                var controllerName = ControllerHelper.RemoveControllerFromStr(nameof(HomeController));
+                return this.RedirectToAction(nameof(HomeController.Index), controllerName);
             }
 
             if (applications != null)

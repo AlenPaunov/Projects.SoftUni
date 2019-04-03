@@ -1,6 +1,9 @@
-﻿namespace ProjectsSoftuni.Services.Models.Projects
+﻿using ProjectsSoftuni.Data.Models;
+using ProjectsSoftuni.Services.Mapping;
+
+namespace ProjectsSoftuni.Services.Models.Projects
 {
-    public class ProjectIndexViewModel
+    public class ProjectIndexViewModel : IMapFrom<Project>
     {
         public string Id { get; set; }
 
@@ -8,6 +11,6 @@
         
         public string Owner { get; set; }
 
-        public string Status { get; set; }
+        public string StatusName { get; set; }
     }
 }
