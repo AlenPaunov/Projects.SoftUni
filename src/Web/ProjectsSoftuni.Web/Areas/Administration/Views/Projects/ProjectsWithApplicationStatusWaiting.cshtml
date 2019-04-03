@@ -5,21 +5,18 @@
     var projectStatuses = this.ViewData["ProjectStatuses"] as IEnumerable<SelectListItem>;
 }
 
-<h1>All Projects</h1>
+<h1>Projects with Applications Status Waiting</h1>
 
 <p>
-    <a asp-action="Create" asp-controller="Projects">Create New</a>
-</p>
-<p>
-    <a asp-action="ProjectsWithApplicationStatusWaiting" asp-controller="Projects">Projects with Applications Status Waiting</a>
+    <a asp-action="Index" asp-controller="Home">All Projects</a>
 </p>
 
-<form asp-action="Index" method="get">
+<form asp-action="ProjectsWithApplicationStatusWaiting" method="get">
     <div class="form-actions no-color">
         <p>
             Find by name or owner: <input type="text" name="searchString" value="@ViewData["currentFilter"]" />
             <input type="submit" value="Search" class="btn btn-default" /> |
-            <a asp-action="Index">Back to Full List</a>
+            <a asp-action="ProjectsWithApplicationStatusWaiting">Back to Full List</a>
         </p>
     </div>
 </form>
@@ -28,13 +25,13 @@
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name</a>
+                <a asp-action="ProjectsWithApplicationStatusWaiting" asp-route-sortOrder="@ViewData["NameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["OwnerSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Owner</a>
+                <a asp-action="ProjectsWithApplicationStatusWaiting" asp-route-sortOrder="@ViewData["OwnerSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Owner</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["StatusSortParam"]">Status</a>
+                <a asp-action="ProjectsWithApplicationStatusWaiting" asp-route-sortOrder="@ViewData["StatusSortParam"]">Status</a>
             </th>
         </tr>
     </thead>
@@ -64,14 +61,14 @@
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
-<a asp-action="Index"
+<a asp-action="ProjectsWithApplicationStatusWaiting"
    asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageIndex="@(Model.PageIndex - 1)"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
    class="btn btn-default @prevDisabled">
     Previous
 </a>
-<a asp-action="Index"
+<a asp-action="ProjectsWithApplicationStatusWaiting"
    asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageIndex="@(Model.PageIndex + 1)"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
