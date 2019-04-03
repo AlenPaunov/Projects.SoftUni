@@ -28,5 +28,7 @@
         Task<string> Edit(ProjectEditViewModel model);
 
         Task<ICollection<TModel>> GetProjectsByUserIdAsync<TModel>(string userId);
+
+        Task<ICollection<TModel>> GetProjectsWithApprovedApplicationByUserIdAsync<TModel>(string userId);
     }
 }

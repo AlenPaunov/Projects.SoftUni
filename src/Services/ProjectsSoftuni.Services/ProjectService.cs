@@ -179,6 +179,18 @@
             return projects;
         }
 
+        public async Task<ICollection<TModel>> GetProjectsWithApprovedApplicationByUserIdAsync<TModel>(string userId)
+        {
+            var projects = await this.projectsRepository
+                .AllAsNoTracking()
+                .Where(u => u.Teams.Any(t => t.Members.Any(m => m.UserId == userId)
+                                             && t.Application.ApplicationStatus.Name == GlobalConstants.ApprovedApplicationStatus))
+                .To<TModel>()
+                .ToListAsync();
+
+            return projects;
+        }
+
         private Project GetProjectById(string id)
         {
             if (string.IsNullOrWhiteSpace(id))

@@ -53,7 +53,7 @@
 
             this.ViewData["CurrentFilter"] = searchString;
 
-            var projects = await this.projectService.GetProjectsByUserIdAsync<ProjectListViewModel>(userId);
+            var projects = await this.projectService.GetProjectsWithApprovedApplicationByUserIdAsync<ProjectListViewModel>(userId);
 
             if (!string.IsNullOrWhiteSpace(searchString))
             {
