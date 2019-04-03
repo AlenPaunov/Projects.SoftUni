@@ -22,5 +22,13 @@
             var controllerName = ControllerHelper.RemoveControllerFromStr(nameof(ProjectsController));
             return this.RedirectToAction(nameof(ProjectsController.Details), controllerName, new { id = projectId });
         }
+
+        public async Task<IActionResult> Reject(string projectId, string teamId)
+        {
+            var isRejectedTeam = await this.applicationService.RejectApplicationAsync(projectId, teamId);
+
+            var controllerName = ControllerHelper.RemoveControllerFromStr(nameof(ProjectsController));
+            return this.RedirectToAction(nameof(ProjectsController.Details), controllerName, new { id = projectId });
+        }
     }
 }

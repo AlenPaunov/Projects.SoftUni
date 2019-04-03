@@ -16,7 +16,7 @@
                 <td>@application.ApplicationStatusName</td>
                 <td>
                     @Html.ActionLink("Approve", "Approve", "Applications", new { projectId = application.ProjectId, teamId = application.TeamId }) |
-                    @Html.ActionLink("Reject", "Reject", new { projectId = application.ProjectId, teamId = application.TeamId })
+                    @Html.ActionLink("Reject", "Reject", "Applications", new { projectId = application.ProjectId, teamId = application.TeamId })
                 </td>
             </tr>
         }

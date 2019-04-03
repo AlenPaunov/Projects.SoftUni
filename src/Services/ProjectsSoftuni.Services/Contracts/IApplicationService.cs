@@ -10,5 +10,7 @@
         Task<bool> ApplyTeamForProjectAsync(string teamName, string projectId, string userId);
 
         Task<bool> ApproveApplicationAsync(string projectId, string teamId);
+
+        Task<bool> RejectApplicationAsync(string projectId, string teamId);
     }
 }

@@ -88,6 +88,35 @@
             return true;
         }
 
+        public async Task<bool> RejectApplicationAsync(string projectId, string teamId)
+        {
+            if (projectId == null || teamId == null)
+            {
+                return false;
+            }
+
+            var application = await this.applicationsRepository
+                .All()
+                .SingleOrDefaultAsync(a => a.ProjectId == projectId && a.TeamId == teamId);
+
+            if (application == null)
+            {
+                return false;
+            }
+
+            var applicationStatusId = await this.applicationStatusService.GetIdByNameAsync(GlobalConstants.RejectedApplicationStatus);
+
+            if (applicationStatusId == InvalidApplicationStatusId)
+            {
+                return false;
+            }
+
+            application.ApplicationStatusId = applicationStatusId;
+
+            await this.applicationsRepository.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> ApplyTeamForProjectAsync(string teamName, string projectId, string userId)
         {
             if (string.IsNullOrWhiteSpace(projectId) && string.IsNullOrWhiteSpace(userId))
@@ -134,7 +163,7 @@
             await this.teamRepository.SaveChangesAsync();
             await this.teamUserRepository.SaveChangesAsync();
             await this.applicationsRepository.SaveChangesAsync();
-            
+
             return true;
         }
 
