@@ -1,7 +1,5 @@
 ﻿namespace ProjectsSoftuni.Web
 {
-    using System.Reflection;
-
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -26,6 +24,7 @@
     using ProjectsSoftuni.Services.Messaging;
     using ProjectsSoftuni.Services.Models.Projects;
     using ProjectsSoftuni.Web.ViewModels;
+    using System.Reflection;
 
     public class Startup
     {
@@ -100,6 +99,17 @@
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
 
             // Application services
+            //var apiKey = this.configuration["SendGridKey"];
+            //var email = this.configuration["Email"];
+            //var name = this.configuration["Name"];
+
+            //services.AddTransient<IEmailSender, SendGridEmailSender>(provider =>
+            //    new SendGridEmailSender(
+            //        new LoggerFactory(),
+            //        apiKey,
+            //        email,
+            //        name));
+
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISmsSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();

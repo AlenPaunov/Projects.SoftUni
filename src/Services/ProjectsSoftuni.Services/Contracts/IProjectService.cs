@@ -1,10 +1,9 @@
 ﻿namespace ProjectsSoftuni.Services.Contracts
 {
+    using ProjectsSoftuni.Services.Models.Projects;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
-    using ProjectsSoftuni.Services.Models.Projects;
 
     public interface IProjectService
     {
@@ -21,7 +20,8 @@
 
         Task<ICollection<TModel>> GetAllAsync<TModel>();
 
-        ProjectDetailsViewModel GetProjectDetailsById(string id);
+        Task<TModel> GetProjectDetailsByIdAsync<TModel>(string id)
+            where TModel : class;
 
         ProjectEditViewModel GetProjectEditViewModel(string id);
 

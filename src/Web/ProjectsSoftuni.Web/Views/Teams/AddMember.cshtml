@@ -1,0 +1,33 @@
+﻿@model ProjectsSoftuni.Web.ViewModels.Teams.AddMemberViewModel
+
+@{
+    ViewData["Title"] = "AddMember";
+    var teamId = (string)ViewData["TeamId"];
+    var projectId = (string)ViewData["ProjectId"];
+}
+
+<h1>AddMember</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddMember">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Member" class="control-label"></label>
+                <input asp-for="Member" class="form-control" />
+                <span asp-validation-for="Member" class="text-danger"></span>
+                <input asp-for="TeamId" value="@teamId" type="hidden" />
+                <input asp-for="ProjectId" value="@projectId" type="hidden" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="MyProjectDetails" asp-controller="Projects" asp-route-id="@projectId">Back to Project</a>
+</div>
+

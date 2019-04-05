@@ -1,6 +1,5 @@
 ﻿namespace ProjectsSoftuni.Services
 {
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -58,6 +57,51 @@
             }
 
             return userTeamForProject != null;
+        }
+
+        public async Task<bool> IsMemberValidAsync(string member)
+        {
+            // member will be username or email
+            var isMemberValid = await this.userRepository
+                .AllAsNoTracking()
+                .AnyAsync(u => u.UserName == member
+                               || u.Email == member);
+
+            return isMemberValid;
+        }
+
+        public async Task<TModel> GetByIdAsync<TModel>(string id)
+        where TModel : class
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return null;
+            }
+
+            var user = await this.userRepository
+                .AllAsNoTracking()
+                .Where(u => u.Id == id)
+                .To<TModel>()
+                .FirstOrDefaultAsync();
+
+            return user;
+        }
+
+        public async Task<TModel> GetByUsernameOrEmailAsync<TModel>(string member)
+            where TModel : class
+        {
+            if (string.IsNullOrWhiteSpace(member))
+            {
+                return null;
+            }
+
+            var user = await this.userRepository
+                .AllAsNoTracking()
+                .Where(u => u.UserName == member || u.Email == member)
+                .To<TModel>()
+                .FirstOrDefaultAsync();
+
+            return user;
         }
 
         private async Task<ProjectsSoftuniUser> GetUserById(string userId)

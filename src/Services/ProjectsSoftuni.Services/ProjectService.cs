@@ -1,5 +1,10 @@
 ﻿namespace ProjectsSoftuni.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     using Microsoft.EntityFrameworkCore;
     using ProjectsSoftuni.Common;
     using ProjectsSoftuni.Data.Common.Repositories;
@@ -7,10 +12,6 @@
     using ProjectsSoftuni.Services.Contracts;
     using ProjectsSoftuni.Services.Mapping;
     using ProjectsSoftuni.Services.Models.Projects;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     public class ProjectService : IProjectService
     {
@@ -89,34 +90,21 @@
             return projects;
         }
 
-        public ProjectDetailsViewModel GetProjectDetailsById(string id)
+        public async Task<TModel> GetProjectDetailsByIdAsync<TModel>(string id)
+            where TModel : class
         {
             if (string.IsNullOrWhiteSpace(id))
             {
                 return null;
             }
 
-            var project = this.projectsRepository.All().Include(p => p.Status).FirstOrDefault(p => p.Id == id);
+            var project = await this.projectsRepository
+                .AllAsNoTracking()
+                .Where(p => p.Id == id)
+                .To<TModel>()
+                .FirstOrDefaultAsync();
 
-            ProjectDetailsViewModel projectViewModel = null;
-
-            if (project != null)
-            {
-                projectViewModel = new ProjectDetailsViewModel()
-                {
-                    Id = project.Id,
-                    Budget = project.Budget,
-                    DeployLink = project.DeployLink,
-                    Description = project.Description,
-                    DueDate = project.DueDate.GetValueOrDefault().ToString("yyyy-MM-dd"),
-                    GitHubLink = project.GitHubLink,
-                    Name = project.Name,
-                    Owner = project.Owner,
-                    Status = project.Status.Name,
-                };
-            }
-
-            return projectViewModel;
+            return project;
         }
 
         public ProjectEditViewModel GetProjectEditViewModel(string id)

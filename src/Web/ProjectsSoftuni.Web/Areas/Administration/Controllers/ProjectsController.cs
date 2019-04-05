@@ -98,7 +98,7 @@ namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
 
         public async Task<IActionResult> Details(string id)
         {
-            var project = this.projectService.GetProjectDetailsById(id);
+            var project = await this.projectService.GetProjectDetailsByIdAsync<ProjectDetailsViewModel>(id);
             var applications = await this.applicationService.GetAllByProjectId<ApplicationViewModel>(id);
 
             if (project == null)
