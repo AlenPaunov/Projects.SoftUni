@@ -1,4 +1,6 @@
-﻿namespace ProjectsSoftuni.Web
+﻿using CloudinaryDotNet;
+
+namespace ProjectsSoftuni.Web
 {
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -113,16 +115,21 @@
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISmsSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();
-            services.AddTransient<IProjectService, ProjectService>();
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IProjectStatusSevice, ProjectStatusSevice>();
-            services.AddTransient<IApplicationService, ApplicationService>();
-            services.AddTransient<ITeamService, TeamService>();
-            services.AddTransient<ITeamUserStatusService, TeamUserStatusService>();
-            services.AddTransient<IApplicationStatusService, ApplicationStatusService>();
 
             // Application services
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IProjectStatusSevice, ProjectStatusSevice>();
+            services.AddScoped<IApplicationService, ApplicationService>();
+            services.AddScoped<ITeamService, TeamService>();
+            services.AddScoped<ITeamUserStatusService, TeamUserStatusService>();
+            services.AddScoped<IApplicationStatusService, ApplicationStatusService>();
+            services.AddScoped<ISpecificationService, SpecificationService>();
+
+            var cloudinaryAccount = new Account(this.configuration["CloudName"], this.configuration["ApiKey"], this.configuration["ApiSecret"]);
+            var cloudinary = new Cloudinary(cloudinaryAccount);
+            services.AddSingleton(cloudinary);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

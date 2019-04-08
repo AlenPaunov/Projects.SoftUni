@@ -1,9 +1,11 @@
 ﻿namespace ProjectsSoftuni.Services.Contracts
 {
-    using ProjectsSoftuni.Services.Models.Projects;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+
+    using ProjectsSoftuni.Data.Models;
+    using ProjectsSoftuni.Services.Models.Projects;
 
     public interface IProjectService
     {
@@ -14,7 +16,6 @@
             string description,
             string owner,
             DateTime? dueDate,
-            string gitHubLink,
             string deployLink,
             decimal? budget);
 
@@ -30,5 +31,10 @@
         Task<ICollection<TModel>> GetProjectsByUserIdAsync<TModel>(string userId);
 
         Task<ICollection<TModel>> GetProjectsWithApprovedApplicationByUserIdAsync<TModel>(string userId);
+
+        Task<TModel> GetProjectByIdAsync<TModel>(string id)
+            where TModel : class;
+
+        Task<string> UpdateSpecificationAsync(Specification specification, string projectId);
     }
 }

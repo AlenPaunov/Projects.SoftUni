@@ -20,8 +20,6 @@ namespace ProjectsSoftuni.Web.ViewModels.Projects
 
         public string ProjectDueDate { get; set; }
 
-        public string ProjectGitHubLink { get; set; }
-
         public string ProjectDeployLink { get; set; }
 
         public decimal? ProjectBudget { get; set; }

@@ -41,12 +41,6 @@
             @Html.DisplayFor(model => model.DueDate)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.GitHubLink)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.GitHubLink)
-        </dd>
-        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.DeployLink)
         </dt>
         <dd class="col-sm-10">
@@ -63,6 +57,7 @@
 <div>
     <a asp-action="Index" asp-controller="Home" asp-area="Administration">Back to List</a> |
     <a asp-area="Administration" asp-controller="Projects" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    <a asp-area="Administration" asp-controller="Projects" asp-action="UploadSpecification" asp-route-id="@Model.Id">Upload Specifications</a>
 
 </div>
 

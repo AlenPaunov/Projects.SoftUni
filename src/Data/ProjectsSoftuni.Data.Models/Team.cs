@@ -15,6 +15,8 @@
         [Required]
         public string Name { get; set; }
 
+        public string GitHubLink { get; set; }
+
         public virtual ICollection<TeamUser> Members { get; set; }
 
         public string ProjectId { get; set; }

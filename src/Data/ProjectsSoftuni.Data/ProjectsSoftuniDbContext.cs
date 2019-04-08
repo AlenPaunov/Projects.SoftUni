@@ -1,14 +1,15 @@
 ﻿namespace ProjectsSoftuni.Data
 {
-    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore;
-    using ProjectsSoftuni.Data.Common.Models;
-    using ProjectsSoftuni.Data.Models;
     using System;
     using System.Linq;
     using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
+
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore;
+    using ProjectsSoftuni.Data.Common.Models;
+    using ProjectsSoftuni.Data.Models;
 
     public class ProjectsSoftuniDbContext : IdentityDbContext<ProjectsSoftuniUser, ProjectsSoftuniRole, string>
     {
@@ -37,6 +38,8 @@
         public virtual DbSet<TeamUser> TeamsUsers { get; set; }
 
         public virtual DbSet<TeamUserStatus> TeamUserStatuses { get; set; }
+
+        public virtual DbSet<Specification> Specifications { get; set; }
 
         public override int SaveChanges() => this.SaveChanges(true);
 

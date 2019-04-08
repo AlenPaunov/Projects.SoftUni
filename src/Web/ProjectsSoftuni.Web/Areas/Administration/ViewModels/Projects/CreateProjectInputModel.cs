@@ -19,8 +19,6 @@
 
         public DateTime? DueDate { get; set; }
 
-        public string GitHubLink { get; set; }
-
         public string DeployLink { get; set; }
 
         public decimal? Budget { get; set; }

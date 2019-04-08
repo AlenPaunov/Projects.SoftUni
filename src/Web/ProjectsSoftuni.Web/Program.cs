@@ -26,7 +26,7 @@ namespace ProjectsSoftuni.Web
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     config.SetBasePath(Directory.GetCurrentDirectory());
-                    config.AddJsonFile("sendGridSettings.json", optional: false, reloadOnChange: false);
+                    config.AddJsonFile("cloudinarySettings.json", optional: false, reloadOnChange: false);
                 })
                 .UseStartup<Startup>();
 

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectsSoftuni.Data;
 
 namespace ProjectsSoftuni.Data.Migrations
 {
     [DbContext(typeof(ProjectsSoftuniDbContext))]
-    partial class ProjectsSoftuniDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190405111214_MoveGithubLinkPropertyFromProjectToTeamEntity")]
+    partial class MoveGithubLinkPropertyFromProjectToTeamEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,15 +171,9 @@ namespace ProjectsSoftuni.Data.Migrations
                     b.Property<string>("Owner")
                         .IsRequired();
 
-                    b.Property<string>("SpecificationId");
-
                     b.Property<int>("StatusId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SpecificationId")
-                        .IsUnique()
-                        .HasFilter("[SpecificationId] IS NOT NULL");
 
                     b.HasIndex("StatusId");
 
@@ -322,23 +318,6 @@ namespace ProjectsSoftuni.Data.Migrations
                     b.ToTable("Settings");
                 });
 
-            modelBuilder.Entity("ProjectsSoftuni.Data.Models.Specification", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreatedOn");
-
-                    b.Property<DateTime?>("ModifiedOn");
-
-                    b.Property<string>("SpecificationId")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Specifications");
-                });
-
             modelBuilder.Entity("ProjectsSoftuni.Data.Models.Team", b =>
                 {
                     b.Property<string>("Id")
@@ -468,10 +447,6 @@ namespace ProjectsSoftuni.Data.Migrations
 
             modelBuilder.Entity("ProjectsSoftuni.Data.Models.Project", b =>
                 {
-                    b.HasOne("ProjectsSoftuni.Data.Models.Specification", "Specification")
-                        .WithOne("Project")
-                        .HasForeignKey("ProjectsSoftuni.Data.Models.Project", "SpecificationId");
-
                     b.HasOne("ProjectsSoftuni.Data.Models.ProjectStatus", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId")

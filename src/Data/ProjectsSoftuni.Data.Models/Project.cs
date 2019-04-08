@@ -30,8 +30,6 @@
 
         public DateTime? DueDate { get; set; }
 
-        public string GitHubLink { get; set; }
-
         public string DeployLink { get; set; }
 
         public decimal? Budget { get; set; }
@@ -39,8 +37,9 @@
         public virtual ICollection<Team> Teams { get; set; }
 
         public virtual ICollection<Application> Applications { get; set; }
-        
-        //public virtual ICollection<ProjectUser> Team { get; set; }
 
+        public string SpecificationId { get; set; }
+
+        public virtual Specification Specification { get; set; }
     }
 }

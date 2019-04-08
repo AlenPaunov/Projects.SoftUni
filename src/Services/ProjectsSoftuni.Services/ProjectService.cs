@@ -54,7 +54,7 @@
             return projects;
         }
 
-        public async Task<string> CreateAsync(string name, string description, string owner, DateTime? dueDate, string gitHubLink, string deployLink, decimal? budget)
+        public async Task<string> CreateAsync(string name, string description, string owner, DateTime? dueDate, string deployLink, decimal? budget)
         {
             var openProjectStatus = this.projectStatusRepository
                 .All()
@@ -66,7 +66,6 @@
                 Description = description,
                 Owner = owner,
                 DueDate = dueDate,
-                GitHubLink = gitHubLink,
                 DeployLink = deployLink,
                 Budget = budget,
                 StatusId = openProjectStatus.Id,
@@ -123,7 +122,6 @@
                 DeployLink = project.DeployLink,
                 Description = project.Description,
                 DueDate = project.DueDate,
-                GitHubLink = project.GitHubLink,
                 Name = project.Name,
                 Owner = project.Owner,
                 StatusId = project.StatusId,
@@ -145,7 +143,6 @@
             projectFromDb.Description = model.Description;
             projectFromDb.Owner = model.Owner;
             projectFromDb.DueDate = model.DueDate;
-            projectFromDb.GitHubLink = model.GitHubLink;
             projectFromDb.DeployLink = model.DeployLink;
             projectFromDb.Budget = model.Budget;
             projectFromDb.StatusId = model.StatusId;
@@ -177,6 +174,35 @@
                 .ToListAsync();
 
             return projects;
+        }
+
+        public async Task<TModel> GetProjectByIdAsync<TModel>(string id)
+        where TModel : class
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return null;
+            }
+
+            var project = await this.projectsRepository
+                .AllAsNoTracking()
+                .Where(p => p.Id == id)
+                .To<TModel>()
+                .FirstOrDefaultAsync();
+
+            return project;
+        }
+
+        public async Task<string> UpdateSpecificationAsync(Specification specification, string projectId)
+        {
+            var project = this.GetProjectById(projectId);
+
+            project.Specification = specification;
+
+            this.projectsRepository.Update(project);
+            await this.projectsRepository.SaveChangesAsync();
+
+            return project.SpecificationId;
         }
 
         private Project GetProjectById(string id)

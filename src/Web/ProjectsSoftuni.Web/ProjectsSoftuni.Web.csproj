@@ -38,4 +38,8 @@
     <ProjectReference Include="..\..\Services\ProjectsSoftuni.Services\ProjectsSoftuni.Services.csproj" />
     <ProjectReference Include="..\ProjectsSoftuni.Web.Infrastructure\ProjectsSoftuni.Web.Infrastructure.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Administration\InputModels\" />
+  </ItemGroup>
 </Project>

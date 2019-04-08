@@ -1,4 +1,5 @@
-﻿using ProjectsSoftuni.Web.Models;
+﻿using ProjectsSoftuni.Services.Models.InputModels;
+using ProjectsSoftuni.Web.Models;
 
 namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
 {
@@ -16,16 +17,23 @@ namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
     {
         private const string ProjectStatusesStr = "ProjectStatuses";
         private const string ApplicationsStr = "Applications";
+        private const string ProjectIdStr = "ProjectId";
 
         private readonly IProjectService projectService;
         private readonly IProjectStatusSevice projectStatusService;
         private readonly IApplicationService applicationService;
+        private readonly ISpecificationService specificationService;
 
-        public ProjectsController(IProjectService projectService, IProjectStatusSevice projectStatusService, IApplicationService applicationService)
+        public ProjectsController(
+            IProjectService projectService,
+            IProjectStatusSevice projectStatusService,
+            IApplicationService applicationService,
+            ISpecificationService specificationService)
         {
             this.projectService = projectService;
             this.projectStatusService = projectStatusService;
             this.applicationService = applicationService;
+            this.specificationService = specificationService;
         }
 
         [HttpGet]
@@ -48,7 +56,6 @@ namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
                     input.Description,
                     input.Owner,
                     input.DueDate,
-                    input.GitHubLink,
                     input.DeployLink,
                     input.Budget);
 
@@ -182,6 +189,31 @@ namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
 
             int pageSize = 5;
             return this.View(PaginatedList<ProjectIndexViewModel>.Create(projects, pageIndex ?? 1, pageSize));
+        }
+
+        public IActionResult UploadSpecification(string id)
+        {
+            this.ViewData[ProjectIdStr] = id;
+            return this.View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadSpecification(UploadSpecificationsInputModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(model);
+            }
+
+            var isCreated = await this.specificationService.UploadSpecificationAsync(model);
+
+            if (!isCreated)
+            {
+                var controllerName = ControllerHelper.RemoveControllerFromStr(nameof(HomeController));
+                return this.RedirectToAction(nameof(HomeController.Index), controllerName);
+            }
+
+            return this.RedirectToAction(nameof(this.Details), new { id = model.ProjectId });
         }
     }
 }
