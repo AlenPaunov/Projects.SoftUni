@@ -2,6 +2,8 @@
 {
     public static class ServicesConstants
     {
-        public static string SpecificationNameTemplate = "{0}_Specifications";
+        public const string SpecificationNameTemplate = "{0}_Specifications";
+
+        public const string SpecificationDetailsUrlTemplate = @"https://res.cloudinary.com/demoprojectssoftuni/image/upload/{0}";
     }
 }

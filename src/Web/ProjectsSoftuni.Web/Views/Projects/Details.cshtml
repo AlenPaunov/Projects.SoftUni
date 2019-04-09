@@ -4,6 +4,7 @@
     ViewData["Title"] = "Details";
     bool isRejectedProject = (bool)ViewData["IsRejectedProject"];
     bool applyProjectEnabled = (bool)ViewData["ApplyProjectEnabled"];
+    string specificationUrl = (string)ViewData["SpecificationUrl"];
 }
 
 <h1>Details</h1>
@@ -57,6 +58,11 @@
     @if (applyProjectEnabled && !isRejectedProject)
     {
         @Html.ActionLink("Applying For Project", "CreateTeam", "Teams", new { projectId = Model.Id })
+    }
+
+    @if (specificationUrl != null)
+    {
+        <a href="@specificationUrl">Project Specifications</a>
     }
 
     @if (this.User.IsInRole("Administrator"))

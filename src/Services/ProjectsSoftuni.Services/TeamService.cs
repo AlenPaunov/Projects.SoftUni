@@ -96,13 +96,7 @@
                 user.Username,
                 team.Project.Name);
 
-            var sendGrid = new SendGridEmailSender(new LoggerFactory(),
-                "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",
-                "slavi.kapsalov@gmail.com", "Slavi Kapsalov");
-
-
-
-            await sendGrid.SendEmailAsync(
+            await this.emailSender.SendEmailAsync(
                 member.Email,
                 subject,
                 emailContent);

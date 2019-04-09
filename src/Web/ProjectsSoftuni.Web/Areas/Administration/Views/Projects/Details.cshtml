@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    var specificationUrl = (string)ViewData["SpecificationUrl"];
 }
 
 <h1>Details</h1>
@@ -58,6 +59,10 @@
     <a asp-action="Index" asp-controller="Home" asp-area="Administration">Back to List</a> |
     <a asp-area="Administration" asp-controller="Projects" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
     <a asp-area="Administration" asp-controller="Projects" asp-action="UploadSpecification" asp-route-id="@Model.Id">Upload Specifications</a>
+    @if (specificationUrl != null)
+    {
+        <a href="@specificationUrl">Project Specifications</a>
+    }
 
 </div>
 

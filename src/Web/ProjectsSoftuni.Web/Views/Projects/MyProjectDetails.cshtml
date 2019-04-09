@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "My Project Details";
+    var specificationUrl = (string)ViewData["SpecificationUrl"];
 }
 
 <h1>Details</h1>
@@ -55,6 +56,11 @@
 </div>
 <div>
     <a asp-action="MyProjects" asp-controller="Users">Back to List</a> |
+    @if (specificationUrl != null)
+    {
+        <a href="@specificationUrl">Project Specifications</a>
+    }
+
     @*TODO: add validation for Team Lead*@
     @if (this.User.IsInRole("Administrator"))
     {

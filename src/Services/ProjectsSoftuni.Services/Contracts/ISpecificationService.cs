@@ -7,5 +7,7 @@
     public interface ISpecificationService
     {
         Task<bool> UploadSpecificationAsync(UploadSpecificationsInputModel model);
+
+        Task<string> GetSpecificationUrlByProjectIdAsync(string projectId);
     }
 }

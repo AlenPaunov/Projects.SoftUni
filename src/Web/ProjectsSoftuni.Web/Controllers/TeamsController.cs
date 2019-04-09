@@ -1,12 +1,15 @@
 ﻿namespace ProjectsSoftuni.Web.Controllers
 {
+    using System.Security.Claims;
+    using System.Threading.Tasks;
+
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using ProjectsSoftuni.Common;
     using ProjectsSoftuni.Services.Contracts;
     using ProjectsSoftuni.Web.ViewModels.Teams;
-    using System.Security.Claims;
-    using System.Threading.Tasks;
 
+    [Authorize]
     public class TeamsController : BaseController
     {
         private const string ProjectId = "ProjectId";

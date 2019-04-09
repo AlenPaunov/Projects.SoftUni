@@ -4,6 +4,7 @@
     using System.Security.Claims;
     using System.Threading.Tasks;
 
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using ProjectsSoftuni.Common;
@@ -11,6 +12,7 @@
     using ProjectsSoftuni.Web.Models;
     using ProjectsSoftuni.Web.ViewModels.Users;
 
+    [Authorize]
     public class UsersController : BaseController
     {
         private const string ProjectStatusesStr = "ProjectStatuses";

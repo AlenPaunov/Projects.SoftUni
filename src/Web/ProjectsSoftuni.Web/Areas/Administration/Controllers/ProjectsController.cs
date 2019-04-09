@@ -3,6 +3,9 @@ using ProjectsSoftuni.Web.Models;
 
 namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
 {
+    using System.Linq;
+    using System.Threading.Tasks;
+
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using ProjectsSoftuni.Common;
@@ -10,14 +13,13 @@ namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
     using ProjectsSoftuni.Services.Models.Projects;
     using ProjectsSoftuni.Web.Areas.Administration.ViewModels.Applications;
     using ProjectsSoftuni.Web.Areas.Administration.ViewModels.Projects;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     public class ProjectsController : AdministrationController
     {
         private const string ProjectStatusesStr = "ProjectStatuses";
         private const string ApplicationsStr = "Applications";
         private const string ProjectIdStr = "ProjectId";
+        private const string SpecificationUrlSrt = "SpecificationUrl";
 
         private readonly IProjectService projectService;
         private readonly IProjectStatusSevice projectStatusService;
@@ -120,6 +122,9 @@ namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
                 this.ViewData[ApplicationsStr] = applicationsViewModel;
             }
 
+            var specificationUrl = await this.specificationService.GetSpecificationUrlByProjectIdAsync(id);
+
+            this.ViewData[SpecificationUrlSrt] = specificationUrl;
             return this.View(project);
         }
 

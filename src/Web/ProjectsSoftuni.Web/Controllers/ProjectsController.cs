@@ -15,16 +15,23 @@
     {
         private const string ApplyProjectEnabledStr = "ApplyProjectEnabled";
         private const string IsRejectedProjectStr = "IsRejectedProject";
+        private const string SpecificationUrlSrt = "SpecificationUrl";
 
         private readonly IProjectService projectService;
         private readonly IUserService userService;
         private readonly ITeamService teamService;
+        private readonly ISpecificationService specificationService;
 
-        public ProjectsController(IProjectService projectService, IUserService userService, ITeamService teamService)
+        public ProjectsController(
+            IProjectService projectService,
+            IUserService userService,
+            ITeamService teamService,
+            ISpecificationService specificationService)
         {
             this.projectService = projectService;
             this.userService = userService;
             this.teamService = teamService;
+            this.specificationService = specificationService;
         }
 
         public async Task<IActionResult> Details(string id)
@@ -45,6 +52,9 @@
             this.ViewData[ApplyProjectEnabledStr] = applyProjectEnabled;
             this.ViewData[IsRejectedProjectStr] = isRejectedProject;
 
+            var specificationUrl = await this.specificationService.GetSpecificationUrlByProjectIdAsync(id);
+            this.ViewData[SpecificationUrlSrt] = specificationUrl;
+
             return this.View(project);
         }
 
@@ -59,6 +69,8 @@
                 return this.RedirectToAction(nameof(HomeController.Index), homeControllerName);
             }
 
+            var specificationUrl = await this.specificationService.GetSpecificationUrlByProjectIdAsync(id);
+            this.ViewData[SpecificationUrlSrt] = specificationUrl;
 
             return this.View(project);
         }

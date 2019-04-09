@@ -1,16 +1,15 @@
-﻿using CloudinaryDotNet;
-using ProjectsSoftuni.Services.Common;
-using ProjectsSoftuni.Services.Models.InputModels;
-using System;
-using System.Threading.Tasks;
-using ProjectsSoftuni.Services.Models.Projects;
-
-namespace ProjectsSoftuni.Services
+﻿namespace ProjectsSoftuni.Services
 {
+    using System.Threading.Tasks;
 
+    using CloudinaryDotNet;
+    using Microsoft.EntityFrameworkCore;
     using ProjectsSoftuni.Data.Common.Repositories;
     using ProjectsSoftuni.Data.Models;
+    using ProjectsSoftuni.Services.Common;
     using ProjectsSoftuni.Services.Contracts;
+    using ProjectsSoftuni.Services.Models.InputModels;
+    using ProjectsSoftuni.Services.Models.Projects;
 
     public class SpecificationService : ISpecificationService
     {
@@ -52,6 +51,29 @@ namespace ProjectsSoftuni.Services
             var specificationId = await this.projectService.UpdateSpecificationAsync(specification, model.ProjectId);
 
             return true;
+        }
+
+        public async Task<string> GetSpecificationUrlByProjectIdAsync(string projectId)
+        {
+            if (string.IsNullOrWhiteSpace(projectId))
+            {
+                return null;
+            }
+
+            var specification = await this.specificationsRepository
+                .AllAsNoTracking()
+                .SingleOrDefaultAsync(s => s.Project.Id == projectId);
+
+            if (specification == null)
+            {
+                return null;
+            }
+
+            var specificationUrl = string.Format(
+                ServicesConstants.SpecificationDetailsUrlTemplate,
+                specification.SpecificationId);
+
+            return specificationUrl;
         }
 
         private string CreateFileName(string projectName)

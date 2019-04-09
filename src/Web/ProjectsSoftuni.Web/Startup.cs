@@ -101,16 +101,16 @@ namespace ProjectsSoftuni.Web
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
 
             // Application services
-            //var apiKey = this.configuration["SendGridKey"];
-            //var email = this.configuration["Email"];
-            //var name = this.configuration["Name"];
+            var apiKey = this.configuration["SendGridKey"];
+            var email = this.configuration["FromAddress"];
+            var name = this.configuration["FromName"];
 
-            //services.AddTransient<IEmailSender, SendGridEmailSender>(provider =>
-            //    new SendGridEmailSender(
-            //        new LoggerFactory(),
-            //        apiKey,
-            //        email,
-            //        name));
+            services.AddTransient<IEmailSender, SendGridEmailSender>(provider =>
+                new SendGridEmailSender(
+                    new LoggerFactory(),
+                    apiKey,
+                    email,
+                    name));
 
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISmsSender, NullMessageSender>();
