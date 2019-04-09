@@ -19,22 +19,22 @@
             this.repository = repository;
         }
 
-        public IActionResult Index()
-        {
-            var settings = this.repository.All().To<SettingViewModel>().ToList();
-            var model = new SettingsListViewModel { Settings = settings };
-            return this.View(model);
-        }
+        //public IActionResult Index()
+        //{
+        //    var settings = this.repository.All().To<SettingViewModel>().ToList();
+        //    var model = new SettingsListViewModel { Settings = settings };
+        //    return this.View(model);
+        //}
 
-        public async Task<IActionResult> InsertSetting()
-        {
-            var random = new Random();
-            var setting = new Setting { Name = $"Name_{random.Next()}", Value = $"Value_{random.Next()}" };
+        //public async Task<IActionResult> InsertSetting()
+        //{
+        //    var random = new Random();
+        //    var setting = new Setting { Name = $"Name_{random.Next()}", Value = $"Value_{random.Next()}" };
 
-            await this.repository.AddAsync(setting);
-            await this.repository.SaveChangesAsync();
+        //    await this.repository.AddAsync(setting);
+        //    await this.repository.SaveChangesAsync();
 
-            return this.RedirectToAction(nameof(this.Index));
-        }
+        //    return this.RedirectToAction(nameof(this.Index));
+        //}
     }
 }

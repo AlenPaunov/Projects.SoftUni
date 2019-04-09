@@ -46,26 +46,26 @@
                 new { id = model.ProjectId });
         }
 
-        public IActionResult AddMember(string teamId, string projectId)
-        {
-            this.ViewData[TeamId] = teamId;
-            this.ViewData[ProjectId] = projectId;
-            return this.View();
-        }
+        //public IActionResult AddMember(string teamId, string projectId)
+        //{
+        //    this.ViewData[TeamId] = teamId;
+        //    this.ViewData[ProjectId] = projectId;
+        //    return this.View();
+        //}
 
-        [HttpPost]
-        public async Task<IActionResult> AddMember(AddMemberViewModel model)
-        {
-            if (!this.ModelState.IsValid)
-            {
-                return this.View(model);
-            }
+        //[HttpPost]
+        //public async Task<IActionResult> AddMember(AddMemberViewModel model)
+        //{
+        //    if (!this.ModelState.IsValid)
+        //    {
+        //        return this.View(model);
+        //    }
 
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var isSend = await this.teamService.SendApprovalMailAsync(model.Member, model.TeamId, userId);
+        //    var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        //    var isSend = await this.teamService.SendApprovalMailAsync(model.Member, model.TeamId, userId);
 
-            var controllerName = ControllerHelper.RemoveControllerFromStr(nameof(ProjectsController));
-            return this.RedirectToAction(nameof(ProjectsController.MyProjectDetails), controllerName, new { id = model.ProjectId });
-        }
+        //    var controllerName = ControllerHelper.RemoveControllerFromStr(nameof(ProjectsController));
+        //    return this.RedirectToAction(nameof(ProjectsController.MyProjectDetails), controllerName, new { id = model.ProjectId });
+        //}
     }
 }

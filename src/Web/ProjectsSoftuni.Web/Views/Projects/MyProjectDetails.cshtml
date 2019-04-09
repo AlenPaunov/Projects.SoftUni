@@ -58,14 +58,14 @@
     <a asp-action="MyProjects" asp-controller="Users">Back to List</a> |
     @if (specificationUrl != null)
     {
-        <a href="@specificationUrl">Project Specifications</a>
+        <a href="@specificationUrl" target="_blank">Project Specifications</a>
     }
 
     @*TODO: add validation for Team Lead*@
-    @if (this.User.IsInRole("Administrator"))
+    @*@if (this.User.IsInRole("Administrator"))
     {
-        @Html.ActionLink("Add Member", "AddMember", "Teams", new {teamId = Model.Team.Id, projectId = Model.ProjectId })
-    }
+        @Html.ActionLink("Add Member", "AddMember", "Teams", new { teamId = Model.Team.Id, projectId = Model.ProjectId })
+    }*@
 </div>
 
 <!-- Section: Team v.1 -->
@@ -76,7 +76,7 @@
     @*<p class="grey-text w-responsive mx-auto mb-5"></p>*@
 
     <div>
-        <hr/>
+        <hr />
         <dl class="row">
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.Team.Name)

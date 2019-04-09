@@ -39,6 +39,9 @@
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.DueDate)
         </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DueDate)
+        </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.DeployLink)
         </dt>
@@ -62,7 +65,7 @@
 
     @if (specificationUrl != null)
     {
-        <a href="@specificationUrl">Project Specifications</a>
+        <a href="@specificationUrl" target="_blank">Project Specifications</a>
     }
 
     @if (this.User.IsInRole("Administrator"))
