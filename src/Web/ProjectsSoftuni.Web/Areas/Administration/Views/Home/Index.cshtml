@@ -1,80 +1,15 @@
-﻿@model ProjectsSoftuni.Web.Models.PaginatedList<ProjectsSoftuni.Services.Models.Projects.ProjectIndexViewModel>
-
-@{
+﻿@{
     ViewData["Title"] = "Admin Index";
-    var projectStatuses = this.ViewData["ProjectStatuses"] as IEnumerable<SelectListItem>;
 }
 
-<h1>All Projects</h1>
+<h1>Administration Index Page</h1>
 
 <p>
-    <a asp-action="Create" asp-controller="Projects">Create New</a>
+    <a asp-action="Index" asp-controller="Projects">Projects</a>
 </p>
 <p>
+    <a asp-action="Index" asp-controller="Teams">Teams</a>
+</p>
+@*<p>
     <a asp-action="ProjectsWithApplicationStatusWaiting" asp-controller="Projects">Projects with Applications Status Waiting</a>
-</p>
-
-<form asp-action="Index" method="get">
-    <div class="form-actions no-color">
-        <p>
-            Find by name or owner: <input type="text" name="searchString" value="@ViewData["currentFilter"]" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
-            <a asp-action="Index">Back to Full List</a>
-        </p>
-    </div>
-</form>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["OwnerSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Owner</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["StatusSortParam"]">Status</a>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var project in Model)
-        {
-            <tr>
-                <td>
-                    @project.Name
-                </td>
-                <td>
-                    @project.Owner
-                </td>
-                <td>
-                    @project.StatusName
-                </td>
-                <td>
-                    @Html.ActionLink("Details", "Details", "Projects", new { id = project.Id })
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
-
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageIndex="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageIndex="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>
+</p>*@

@@ -3,9 +3,6 @@ using ProjectsSoftuni.Web.Models;
 
 namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
 {
-    using System.Linq;
-    using System.Threading.Tasks;
-
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using ProjectsSoftuni.Common;
@@ -13,6 +10,8 @@ namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
     using ProjectsSoftuni.Services.Models.Projects;
     using ProjectsSoftuni.Web.Areas.Administration.ViewModels.Applications;
     using ProjectsSoftuni.Web.Areas.Administration.ViewModels.Projects;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public class ProjectsController : AdministrationController
     {
@@ -38,6 +37,68 @@ namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
             this.specificationService = specificationService;
         }
 
+        public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageIndex)
+        {
+            this.ViewData["NameSortParam"] = sortOrder == "name" ? "name_desc" : "name";
+            this.ViewData["OwnerSortParam"] = sortOrder == "owner" ? "owner_desc" : "owner";
+            this.ViewData["StatusSortParam"] = sortOrder == "status" ? "status_desc" : "status";
+            this.ViewData["CurrentFilter"] = searchString;
+            this.ViewData["CurrentSort"] = sortOrder;
+
+            if (searchString != null)
+            {
+                pageIndex = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            this.ViewData["CurrentFilter"] = searchString;
+
+            var projects = await this.projectService.GetAllAsync<ProjectIndexViewModel>();
+
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                projects = projects
+                     .Where(p => p.Name.ToLower().Contains(searchString.ToLower())
+                         || p.Owner.ToLower().Contains(searchString.ToLower()))
+                     .ToList();
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    projects = projects.OrderByDescending(p => p.Name).ToList();
+                    break;
+                case "name":
+                    projects = projects.OrderBy(p => p.Name).ToList();
+                    break;
+                case "owner_desc":
+                    projects = projects.OrderByDescending(p => p.Owner).ToList();
+                    break;
+                case "owner":
+                    projects = projects.OrderBy(p => p.Owner).ToList();
+                    break;
+                case "status_desc":
+                    projects = projects.OrderByDescending(p => p.StatusName).ToList();
+                    break;
+                case "status":
+                    projects = projects.OrderBy(p => p.StatusName).ToList();
+                    break;
+            }
+
+            var projectStatuses = this.projectStatusService.GetAllProjectStatuses();
+            this.ViewData[ProjectStatusesStr] = projectStatuses.Select(s => new SelectListItem
+            {
+                Value = s.Id.ToString(),
+                Text = s.Name,
+            });
+
+            int pageSize = 5;
+            return this.View(PaginatedList<ProjectIndexViewModel>.Create(projects, pageIndex ?? 1, pageSize));
+        }
+
         [HttpGet]
         public IActionResult Create()
         {
@@ -61,8 +122,11 @@ namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
                     input.DeployLink,
                     input.Budget);
 
-            var controllerName = ControllerHelper.RemoveControllerFromStr(nameof(HomeController));
-            return this.RedirectToAction(nameof(HomeController.Index), controllerName);
+            var projectsControllerName = ControllerHelper.RemoveControllerFromStr(nameof(ProjectsController));
+            return this.RedirectToAction(
+                nameof(ProjectsController.Details),
+                projectsControllerName,
+                new { id = projectId });
         }
 
         [HttpGet]
@@ -95,14 +159,17 @@ namespace ProjectsSoftuni.Web.Areas.Administration.Controllers
             }
 
             var projectId = await this.projectService.Edit(inputModel);
-            var controllerName = ControllerHelper.RemoveControllerFromStr(nameof(HomeController));
+            var projectsControllerName = ControllerHelper.RemoveControllerFromStr(nameof(ProjectsController));
 
             if (projectId == null)
             {
-                return this.RedirectToAction(nameof(HomeController.Index), controllerName);
+                return this.RedirectToAction(nameof(HomeController.Index), projectsControllerName);
             }
 
-            return this.RedirectToAction(nameof(HomeController.Index), controllerName);
+            return this.RedirectToAction(
+                nameof(ProjectsController.Details),
+                projectsControllerName,
+                new { id = inputModel.Id });
         }
 
         public async Task<IActionResult> Details(string id)

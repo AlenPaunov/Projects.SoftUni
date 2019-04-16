@@ -38,7 +38,7 @@
 
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var teamId = await this.teamService.CreteTeam(model.Name, model.ProjectId, userId);
+            var teamId = await this.teamService.CreteTeamAsync(model.Name, model.ProjectId, userId);
 
             return this.RedirectToAction(
                 nameof(ProjectsController.Details),

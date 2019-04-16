@@ -1,0 +1,66 @@
+﻿@model ProjectsSoftuni.Web.Models.PaginatedList<ProjectsSoftuni.Web.Areas.Administration.ViewModels.Teams.TeamIndexViewModel>
+
+@{
+    ViewData["Title"] = "Admin Index";
+}
+
+<h1>All Teams</h1>
+
+<form asp-action="Index" asp-controller="Teams" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name or project name: <input type="text" name="searchString" value="@ViewData["currentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["ProjectNameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Project Name</a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var team in Model)
+        {
+            <tr>
+                <td>
+                    @team.Name
+                </td>
+                <td>
+                    @team.ProjectName
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "Details", "Teams", new { id = team.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageIndex="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageIndex="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>

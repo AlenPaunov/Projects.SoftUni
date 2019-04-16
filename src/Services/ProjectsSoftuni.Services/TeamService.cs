@@ -1,18 +1,17 @@
 ﻿namespace ProjectsSoftuni.Services
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
     using HtmlAgilityPack;
     using Microsoft.AspNetCore.Identity.UI.Services;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Logging;
     using ProjectsSoftuni.Common;
     using ProjectsSoftuni.Data.Common.Repositories;
     using ProjectsSoftuni.Data.Models;
     using ProjectsSoftuni.Services.Contracts;
     using ProjectsSoftuni.Services.Mapping;
-    using ProjectsSoftuni.Services.Messaging;
     using ProjectsSoftuni.Services.Models.Users;
 
     public class TeamService : ITeamService
@@ -34,7 +33,7 @@
             this.emailSender = emailSender;
         }
 
-        public async Task<string> CreteTeam(string teamName, string projectId, string userId)
+        public async Task<string> CreteTeamAsync(string teamName, string projectId, string userId)
         {
             var teamUserStatusId = this.teamUserStatusService.GetIdByName(GlobalConstants.TeamUserStatusTeamLead).Result;
 
@@ -71,38 +70,48 @@
             return project;
         }
 
-        public async Task<bool> SendApprovalMailAsync(string memberStr, string teamId, string invitationUserId)
+        public async Task<ICollection<TModel>> GetAllAsync<TModel>()
         {
-            var team = await this.teamRepository
-                .All()
-                .SingleOrDefaultAsync(t => t.Id == teamId);
+            var teams = await this.teamRepository
+                .AllAsNoTracking()
+                .To<TModel>()
+                .ToListAsync();
 
-            if (team == null)
-            {
-                return false;
-            }
-
-            var member = await this.userService.GetByUsernameOrEmailAsync<UserViewModel>(memberStr);
-            var user = await this.userService.GetByIdAsync<UserViewModel>(invitationUserId);
-
-            if (member == null || user == null)
-            {
-                return false;
-            }
-
-            var emailContent = this.GenerateEmailContent(member, user, team);
-            var subject = string.Format(
-                EmailSendConstants.InvitationEmailSubject,
-                user.Username,
-                team.Project.Name);
-
-            await this.emailSender.SendEmailAsync(
-                member.Email,
-                subject,
-                emailContent);
-
-            return true;
+            return teams;
         }
+
+        //public async Task<bool> SendApprovalMailAsync(string memberStr, string teamId, string invitationUserId)
+        //{
+        //    var team = await this.teamRepository
+        //        .All()
+        //        .SingleOrDefaultAsync(t => t.Id == teamId);
+
+        //    if (team == null)
+        //    {
+        //        return false;
+        //    }
+
+        //    var member = await this.userService.GetByUsernameOrEmailAsync<UserViewModel>(memberStr);
+        //    var user = await this.userService.GetByIdAsync<UserViewModel>(invitationUserId);
+
+        //    if (member == null || user == null)
+        //    {
+        //        return false;
+        //    }
+
+        //    var emailContent = this.GenerateEmailContent(member, user, team);
+        //    var subject = string.Format(
+        //        EmailSendConstants.InvitationEmailSubject,
+        //        user.Username,
+        //        team.Project.Name);
+
+        //    await this.emailSender.SendEmailAsync(
+        //        member.Email,
+        //        subject,
+        //        emailContent);
+
+        //    return true;
+        //}
 
         private string GenerateEmailContent(UserViewModel member, UserViewModel invitationUser, Team team)
         {
